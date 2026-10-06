@@ -6,8 +6,10 @@
 <summary>📋 목차</summary>
 
 - [🚀 Project Overview](#-project-overview)
+- [🔗 결과물](#-결과물)
 - [⏱ 시간 측정](#-시간-측정)
 - [✨ 주요 기능](#-주요-기능)
+- [🎨 Design](#-design)
 - [🛠 Core Stack](#-core-stack)
 - [🧠 Technical Highlights](#-technical-highlights)
 - [🔄 주요 동작 흐름](#-주요-동작-흐름)
@@ -25,6 +27,13 @@
 Figma MCP를 이용해 Figma에 웹 디자인을 자동으로 만들고, 그 디자인을 기준으로 실제 웹 사이트를 구현합니다. 프로젝트 설계부터 마무리까지 모든 단계를 나누어 소요 시간을 기록하고, **목표 시간(1일, 업무 시간 기준 8시간)** 과 실제 소요 시간을 비교합니다.
 
 도메인은 **베이커리 쇼핑몰**입니다. 제작 범위는 **쇼핑몰(사용자)** 과 **관리자 페이지** 두 영역입니다.
+
+---
+
+## 🔗 결과물
+
+- [Figma 디자인 파일](https://www.figma.com/design/K2JSj6AYetrUr0BpoN4R7u) — 쇼핑몰 데스크톱 · 모바일 화면, 컴포넌트, 디자인 토큰
+- [디자인 브리프](./docs/design-brief.md) — 색 · 타이포그래피 · 화면 구성 · 이미지 규칙
 
 ---
 
@@ -51,11 +60,12 @@ Figma MCP를 이용해 Figma에 웹 디자인을 자동으로 만들고, 그 디
 
 ```bash
 # 예: [Figma-MCP] 쇼핑몰 디자인
-open "session:///start?intent=%5BFigma-MCP%5D%20%EC%87%BC%ED%95%91%EB%AA%B0%20%EB%94%94%EC%9E%90%EC%9D%B8&categoryId=<Session 카테고리 ID>&duration=120"
+open "session:///start?intent=%5BFigma-MCP%5D%20%EC%87%BC%ED%95%91%EB%AA%B0%20%EB%94%94%EC%9E%90%EC%9D%B8&categoryId=<Session 카테고리 ID>&duration=240"
 open "session:///finish"
 ```
 
-- 단계 사이의 휴식 시간은 측정에서 제외합니다.
+- 단계 사이의 휴식 시간과 단계 중 일시정지 구간은 측정에서 제외합니다.
+- `duration`은 넉넉히 둡니다. Session은 설정한 집중 시간이 지나면 자동으로 종료됩니다.
 - 각 단계가 끝나면 위 표에 실제 소요 시간을 기록합니다.
 
 ---
@@ -88,6 +98,55 @@ open "session:///finish"
 | 로그인 / 회원가입 | 구현하지 않음. 비회원 이용을 전제로 함 (관리자 페이지 포함) |
 | 결제 | PG 연동 없이 결제창 UI까지만 구현 |
 | 이미지 업로드 | 구현하지 않음. `public/`의 고정 이미지 사용 |
+
+---
+
+## 🎨 Design
+
+Figma MCP로 Figma 파일에 디자인 토큰, 컴포넌트, 화면을 직접 생성했습니다. 상세 규칙은 [디자인 브리프](./docs/design-brief.md)에 있습니다.
+
+### 콘셉트
+
+**우아하면서 따뜻한, 갓 구운 빵 냄새가 나는 베이커리.** 배경은 밝고 단순하게 두고, 개성은 상품 사진과 포인트 색 하나로 냅니다. 레퍼런스(Sugar Bliss, SLOY, CAKÉ 랜딩과 shadcn/ui 대시보드 예시)에서 상품 카드 · 상세 · 카테고리 카드 구성을 가져오고, 구현 비용이 큰 장식(손글씨, 스크롤 연출, 360° 회전 등)은 뺐습니다.
+
+### 디자인 시스템
+
+| 구분 | 내용 |
+| --- | --- |
+| 색 스케일 | brown(바탕 · 글자) · primary(브랜드 그린, 클릭 요소 전용) · secondary(브랜드 핑크) · honey · mauve. 모든 스케일을 **같은 단계 = 같은 밝기**로 맞춰, 단계만 바꿔 섞어 써도 대비 규칙이 유지됨 |
+| 시맨틱 토큰 | `bg/*`, `text/*`, `border/*`, `action/*`, `badge/*`, `category/*` — Figma Variables에 CSS 변수명(`var(--bg-page)` 등)을 함께 기록해 Tailwind 설정으로 그대로 옮김 |
+| 카테고리 색 | 빵 brown · 케이크 secondary(핑크) · 쿠키 honey · 음료 mauve. 네 색을 같은 밝기로 맞춰 나란히 놓여도 무게가 같음 |
+| 타이포그래피 | 제목 Noto Serif KR, 본문 Noto Sans KR (둘 다 Google Fonts → `next/font`로 디자인과 같은 서체 사용) |
+| 컴포넌트 | Button, Badge, Chip, Input, SearchBar, QuantityStepper, ProductCard, CategoryCard, CartItem, OrderSummary, OrderCard, OrderItemRow, Header/Footer, 모바일 전용(MobileHeader, BottomTabBar, CategoryTab 등) |
+
+### 화면
+
+| 영역 | 화면 |
+| --- | --- |
+| 쇼핑몰 (데스크톱 · 모바일) | 홈, 상품 목록, 검색, 검색 결과, 상품 상세, 장바구니, 주문서, 결제창, 주문 완료, 마이페이지(로그인 + 비회원 주문조회), 주문 내역(회원), 주문 상세 |
+| 관리자 | 관리자 디자인 단계에서 작성 예정 |
+
+### 모바일은 축소가 아니라 재설계
+
+데스크톱 구조를 그대로 줄이지 않고 모바일 사용 패턴에 맞게 바꿨습니다.
+
+| 데스크톱 | 모바일 |
+| --- | --- |
+| 헤더 메뉴 + 검색 · 장바구니 · 관리자 버튼 | 로고만 있는 헤더 + **하단 고정 탭 바**(검색 · 장바구니 · 상품 · 마이페이지 · 관리자) |
+| 카테고리 카드 4장 (사각 이미지) | 원형 카테고리 아이콘 탭 → 탭하면 아래 상품 목록이 바뀜 |
+| 헤더의 카테고리 메뉴 | 가운데 **상품 버튼**을 누르면 카테고리 버블이 부채꼴로 떠오름 (모션 사양은 Figma 노트) |
+| 검색 모달 | 전체 화면 검색 |
+| 결제 다이얼로그 | 하단에서 올라오는 결제 시트 |
+
+### 이미지
+
+상품 · 배너 · 카테고리 이미지 20장은 Figma MCP의 이미지 생성으로 만들고 `public/images/`에 저장했습니다. 상품 사진은 같은 프롬프트 틀(아침 햇살, 리넨 위 나무 도마, 크림 · 브라운 톤)로 톤을 통일했습니다.
+카테고리 이미지는 배경 없는 PNG가 필요했는데, 이미지 생성 모델은 투명 배경을 출력하지 못합니다. 그래서 순수 파란색 크로마키 배경으로 생성한 뒤 로컬 스크립트로 파란색만 지웠습니다. AI 피사체 분리(macOS Vision)는 크림색 접시나 어두운 빵의 가장자리를 잘라내서 쓰지 않았습니다.
+
+### Figma MCP 사용 메모
+
+- Figma MCP는 Starter 플랜(View 시트)에서 월 20회 호출로 제한되며, 화면을 그리는 `use_figma`도 한도에 포함됩니다. 디자인 단계 도중 한도에 걸려 Professional 플랜 Full 시트(하루 200회)로 전환했습니다.
+- 이미지 생성은 Figma AI 크레딧을 사용합니다 (기본 모델 기준 1장 6크레딧).
 
 ---
 
