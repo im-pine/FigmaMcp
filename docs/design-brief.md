@@ -197,6 +197,9 @@ Figma MCP의 이미지 생성(`generate_image`, 기본 모델 `gemini-3.1-flash-
 | --- | --- | --- |
 | 상품 (12) | `public/images/products/` | 정사각형. 모든 상품을 같은 프롬프트 틀로 생성해 톤을 통일 |
 | 배너 · 스토리 (3) | `public/images/hero/` | 데스크톱 배너는 가로형으로 왼쪽을, 모바일 배너는 세로형으로 아래쪽을 비워 글자 자리를 확보 |
+
+메인 배너는 화면 비율이 달라 **데스크톱용(`hero-desktop.jpg`, 가로형)과 모바일용(`hero-mobile.jpg`, 세로형)을 따로** 씁니다.
+구현할 때는 CSS로 둘 중 하나를 숨기지 않고, `<picture>` + `<source media>`(Next.js는 `getImageProps`)로 화면 폭에 맞는 파일 하나만 내려받게 합니다. CSS로 숨기면 모바일에서도 데스크톱 이미지를 내려받습니다.
 | 카테고리 (5) | `public/images/categories/` | 접시 · 받침 · 그림자 · 테두리 없는 오브젝트만, 배경 투명 PNG |
 
 ### 상품 사진 프롬프트 틀
