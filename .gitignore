@@ -1,0 +1,18 @@
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Dependencies & build
+node_modules/
+.next/
+out/
+build/
+coverage/
+
+# Env
+.env
+.env*.local
+
+# Logs
+*.log
