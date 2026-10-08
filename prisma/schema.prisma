@@ -1,0 +1,112 @@
+// 데이터 구조의 단일 기준. 프론트엔드에서 별도 interface를 만들지 않고 생성된 타입을 그대로 쓴다.
+// 이 파일은 한 세션(공통 작업)에서만 수정한다. 병렬 작업 중 변경이 필요하면 별도 PR로 올린다.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+generator zod {
+  provider = "prisma-zod-generator"
+  output   = "../src/generated/zod"
+  config   = "./zod-generator.config.json"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Category {
+  BREAD
+  CAKE
+  COOKIE
+  BEVERAGE
+}
+
+enum OrderStatus {
+  RECEIVED // 주문 접수
+  PREPARING // 배송 준비중
+  SHIPPING // 배송중
+  DELIVERED // 배송 완료
+  CANCELED // 주문 취소
+}
+
+enum PaymentMethod {
+  CARD // 신용카드
+  BANK_TRANSFER // 계좌이체
+  EASY_PAY // 간편결제
+}
+
+model Product {
+  id           Int         @id @default(autoincrement())
+  /// @zod.min(1)
+  slug         String      @unique
+  /// @zod.min(1)
+  name         String
+  /// 영문 부제 (예: Butter Croissant)
+  nameEn       String
+  description  String
+  /// 원 단위 가격. Decimal은 클라이언트로 전달할 수 없어서 Int를 쓴다.
+  /// @zod.positive()
+  price        Int
+  category     Category
+  /// public 기준 경로 (예: /images/products/butter-croissant.jpg)
+  imagePath    String
+  isBest       Boolean     @default(false)
+  /// 누적 판매 수량 (취소되지 않은 주문의 수량 합계). 인기순 정렬용으로 조회 때마다 세지 않고 저장한다.
+  /// 원본은 OrderItem이고 이 값은 파생값이다 → `pnpm db:recount`로 언제든 다시 계산할 수 있다.
+  /// 증가 · 감소는 server/services/order/sales.ts의 applySalesDelta로만 한다. 인덱스는 두지 않는다 (docs: Wiki Data).
+  salesCount   Int         @default(0)
+  ingredients  String
+  storageGuide String
+  allergens    String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orderItems   OrderItem[]
+
+  @@index([category])
+}
+
+model Order {
+  id             Int           @id @default(autoincrement())
+  /// 비회원 조회용 주문번호 (예: 20261008-0001)
+  orderNo        String        @unique
+  /// @zod.min(1)
+  ordererName    String
+  /// @zod.min(9)
+  ordererPhone   String
+  ordererEmail   String
+  /// @zod.min(1)
+  recipientName  String
+  /// @zod.min(9)
+  recipientPhone String
+  /// @zod.min(1)
+  address        String
+  addressDetail  String
+  requestNote    String?
+  paymentMethod  PaymentMethod
+  status         OrderStatus   @default(RECEIVED)
+  subtotal       Int
+  shippingFee    Int
+  total          Int
+  items          OrderItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status])
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     Int
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   Int?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  /// 주문 시점 스냅샷 (상품이 수정 · 삭제돼도 주문 내역은 유지)
+  productName String
+  unitPrice   Int
+  /// @zod.positive()
+  quantity    Int
+  giftWrap    Boolean  @default(false)
+  lineTotal   Int
+}

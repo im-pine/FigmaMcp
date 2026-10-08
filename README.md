@@ -15,7 +15,7 @@ Figma MCP를 이용해 Figma에 웹 디자인을 자동으로 만들고, 그 디
 ## 🔗 결과물
 
 - [프로젝트 Wiki](https://github.com/im-pine/FigmaMcp/wiki) — 디자인 시스템, 아키텍처, 시간 측정 기록 등 상세 문서
-- [Figma 디자인 파일](https://www.figma.com/design/K2JSj6AYetrUr0BpoN4R7u) — 쇼핑몰 데스크톱 · 모바일 화면, 컴포넌트, 디자인 토큰
+- [Figma 디자인 파일](https://www.figma.com/design/K2JSj6AYetrUr0BpoN4R7u) — 쇼핑몰 · 관리자 데스크톱 · 모바일 화면, 컴포넌트, 디자인 토큰
 - [디자인 브리프](./docs/design-brief.md) — 색 · 타이포그래피 · 화면 구성 · 이미지 규칙
 
 ---
@@ -27,11 +27,11 @@ Figma MCP를 이용해 Figma에 웹 디자인을 자동으로 만들고, 그 디
 | 1 | 프로젝트 설계 | README 작성, 기능 범위 정의, 기술 스택 및 데이터 구조 결정 | 1시간 10분 |
 | 2 | 레퍼런스 조사 | 레퍼런스 디자인 조사, 디자인 방향 결정 | 44분 |
 | 3 | 쇼핑몰 디자인 | Figma MCP로 사용자 페이지 디자인 (데스크톱 · 모바일, 이미지 생성 포함) | 2시간 |
-| 4 | 쇼핑몰 개발 | 사용자 페이지 구현 | |
-| 5 | 관리자 디자인 | Figma MCP로 관리자 페이지 디자인 | |
+| 4 | 쇼핑몰 개발 | 사용자 페이지 구현 | 2시간 28분 |
+| 5 | 관리자 디자인 | Figma MCP로 관리자 페이지 디자인 (데스크톱 · 모바일) | 1시간 |
 | 6 | 관리자 개발 | 관리자 페이지 구현 | |
 | 7 | 마무리 | 테스트 코드 작성, 점검 | |
-| | **합계** | **목표: 8시간 이내** | 3시간 54분 (진행 중) |
+| | **합계** | **목표: 8시간 이내** | 7시간 22분 (진행 중) |
 
 macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며, 휴식과 일시정지 구간은 제외합니다.
 측정 방식과 단계별 회고는 [Wiki — Time](https://github.com/im-pine/FigmaMcp/wiki/Project%E2%80%90Time)에 정리했습니다.
@@ -53,6 +53,7 @@ macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며
 ### 관리자
 
 - 상품 등록 / 수정 / 삭제, 주문 조회 및 상태 관리
+- 주문 상태 **일괄 변경** (여러 주문을 선택해 상태만 한 번에 변경), 모바일은 하단 탭의 **접수** 바로가기로 새 주문 확인
 - 포트폴리오 확인용으로 **조회는 누구나 가능**, 데이터 변경은 **관리자 비밀번호** 확인 후 실행
 - 주문자 개인정보는 마스킹해서 표시
 
@@ -107,18 +108,16 @@ macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며
 
 ## ⚙️ Getting Started
 
-> 프로젝트 초기화 전입니다. 개발 환경이 구성되면 아래 내용을 갱신합니다.
-
 ### Requirements
 
-- Node.js `[추가 정보 필요: 버전]`
-- Docker (로컬 PostgreSQL 실행용, 기존 PostgreSQL 컨테이너에 이 프로젝트 전용 DB를 생성해 사용)
+- Node.js 24 이상
+- pnpm 10 (`corepack enable pnpm`)
+- Docker (로컬 PostgreSQL)
 
 ### Environment Variables
 
-```dotenv
-DATABASE_URL=
-ADMIN_PASSWORD=
+```bash
+cp .env.example .env
 ```
 
 | 변수 | 설명 |
@@ -128,7 +127,22 @@ ADMIN_PASSWORD=
 
 ### Installation & Development
 
-`[추가 정보 필요: 패키지 매니저 및 package.json scripts]`
+```bash
+pnpm install        # 설치 후 Prisma client · Zod 스키마 자동 생성
+pnpm db:migrate     # DB 마이그레이션
+pnpm db:seed        # 상품 12종 시드
+pnpm dev            # http://localhost:3000  (디자인 시스템 미리보기: /dev/ui)
+```
+
+| Command | Description |
+| --- | --- |
+| `pnpm build` | 프로덕션 빌드 |
+| `pnpm lint` | ESLint (영역 경계 규칙 포함) |
+| `pnpm typecheck` | 라우트 타입 생성 + TypeScript 검사 |
+| `pnpm format` | Prettier |
+| `pnpm db:studio` | Prisma Studio |
+
+폴더 구조와 개발 규칙은 [`CLAUDE.md`](./CLAUDE.md)를 참고하세요.
 
 ---
 
