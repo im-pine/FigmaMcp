@@ -1,5 +1,10 @@
-import { PagePlaceholder } from "@/features/shop/layout/PagePlaceholder";
+import { Suspense } from "react";
+import { ProductCatalog, ProductCatalogSkeleton } from "@/features/shop/product/components/ProductCatalog";
 
-export default function Page() {
-  return <PagePlaceholder title="상품 목록" owner="feat/shop-catalog" />;
+export default function Page({ searchParams }: PageProps<"/products">) {
+  return (
+    <Suspense fallback={<ProductCatalogSkeleton />}>
+      <ProductCatalog searchParams={searchParams} />
+    </Suspense>
+  );
 }
