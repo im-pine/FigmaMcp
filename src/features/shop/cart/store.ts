@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "@/generated/prisma/client";
+import { GIFT_WRAP_FEE, shippingFeeFor } from "@/shared/constants/catalog";
 
 /*
  * 장바구니 — 비회원 전용 클라이언트 상태 (localStorage 유지).
@@ -59,4 +60,24 @@ export function useCartRehydrate() {
   useEffect(() => {
     useCartStore.persist.rehydrate();
   }, []);
+}
+
+/** localStorage 값을 다 불러왔는지. 그 전에는 빈 장바구니로 단정하지 않고 자리만 잡아 둔다. */
+export function useCartHydrated() {
+  return useSyncExternalStore(
+    (onChange) => useCartStore.persist.onFinishHydration(onChange),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
+  );
+}
+
+/** 한 줄 금액(표시용): (가격 + 선물 포장) × 수량 */
+export const lineTotalOf = (item: CartItem) =>
+  (item.price + (item.giftWrap ? GIFT_WRAP_FEE : 0)) * item.quantity;
+
+/** 장바구니 금액 요약(표시용). 실제 결제 금액은 서버가 DB 가격으로 다시 계산한다. */
+export function summarizeCart(items: CartItem[]) {
+  const subtotal = items.reduce((sum, i) => sum + lineTotalOf(i), 0);
+  const shippingFee = items.length === 0 ? 0 : shippingFeeFor(subtotal);
+  return { subtotal, shippingFee, total: subtotal + shippingFee };
 }
