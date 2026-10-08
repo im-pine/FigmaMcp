@@ -45,7 +45,7 @@ export async function ProductCatalog({ searchParams }: { searchParams: SearchPar
       <section className="mx-auto max-w-[1440px] px-5 pt-6 pb-16 lg:px-20 lg:pt-10 lg:pb-24">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <CatalogFilterBar category={category?.slug} q={q} sort={sort === "latest" ? sort : undefined} />
-          <div className="flex shrink-0 items-center gap-4 type-body-sm text-caption">
+          <div className="flex shrink-0 items-center justify-between gap-4 type-body-sm text-caption lg:justify-end">
             <span>{q ? `${products.length}개의 상품` : `총 ${products.length}개`}</span>
             <SortSelect value={sort} />
           </div>
