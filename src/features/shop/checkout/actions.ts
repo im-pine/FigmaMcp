@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { createOrder, priceOrder } from "@/server/services/order/create";
 import { CheckoutItemsSchema, parseCheckout, type CheckoutErrors } from "./schema";
 
@@ -11,7 +12,10 @@ export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
   if (!parsed.success) return { errors: parsed.errors };
 
   const result = await createOrder({ ...parsed.data, requestNote: parsed.data.requestNote ?? null });
-  if (result.ok) return { orderNo: result.orderNo };
+  if (result.ok) {
+    updateTag("product-sales"); // 판매수가 바뀌었으니 인기순 목록 캐시 갱신
+    return { orderNo: result.orderNo };
+  }
 
   return {
     errors: {

@@ -2,6 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import type { Category, Product } from "@/generated/prisma/client";
 import { db } from "@/server/db";
+import type { ProductSort } from "@/shared/constants/catalog";
 
 /*
  * 쇼핑몰 상품 조회.
@@ -13,13 +14,15 @@ export type ProductFilter = {
   category?: Category;
   /** 상품명(한글 · 영문) 부분 일치 검색어 */
   q?: string;
+  /** 정렬 — 생략하면 등록 순(id 오름차순, 홈 · 추천용 고정 순서). latest: 최신순, popular: 판매수 많은 순(같으면 최신순) */
+  sort?: ProductSort;
 };
 
-/** 상품 목록 — 카테고리 · 검색어 필터, 등록 순 */
+/** 상품 목록 — 카테고리 · 검색어 필터 + 정렬. 판매수가 바뀌면 updateTag('product-sales')로 갱신한다 */
 export async function getProducts(filter: ProductFilter = {}): Promise<Product[]> {
   "use cache";
   cacheLife("hours");
-  cacheTag("products");
+  cacheTag("products", "product-sales");
 
   const q = filter.q?.trim();
   return db.product.findMany({
@@ -32,7 +35,13 @@ export async function getProducts(filter: ProductFilter = {}): Promise<Product[]
         ],
       }),
     },
-    orderBy: { id: "asc" },
+    // id를 마지막 기준으로 두어 같은 값끼리도 순서가 항상 같게 한다
+    orderBy:
+      filter.sort === "latest"
+        ? [{ createdAt: "desc" }, { id: "desc" }]
+        : filter.sort === "popular"
+          ? [{ salesCount: "desc" }, { createdAt: "desc" }, { id: "desc" }]
+          : { id: "asc" },
   });
 }
 

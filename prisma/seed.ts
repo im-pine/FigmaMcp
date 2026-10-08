@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type Prisma } from "../src/generated/prisma/client";
+import { shippingFeeFor } from "../src/shared/constants/catalog";
+import { recountSales } from "./lib/recount";
 
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
 
@@ -145,16 +147,199 @@ const items = [
   },
 ] satisfies Omit<Prisma.ProductCreateInput, "imagePath">[];
 
+// 최신순 정렬이 인기순과 다르게 보이도록, 상품마다 며칠 전에 등록됐는지 다르게 둔다
+const REGISTERED_DAYS_AGO: Record<string, number> = {
+  americano: 120,
+  "butter-croissant": 90,
+  campagne: 90,
+  baguette: 80,
+  "salt-bread": 60,
+  "chocolate-chip-cookie": 45,
+  "strawberry-cake": 30,
+  "basque-cheesecake": 21,
+  "chocolate-brownie": 14,
+  "earl-grey-scone": 7,
+  "butter-cookie": 5,
+  "royal-milk-tea": 3,
+};
+const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
+
 const products: Prisma.ProductCreateInput[] = items.map((p) => ({
   ...p,
   imagePath: `/images/products/${p.slug}.jpg`,
+  createdAt: daysAgo(REGISTERED_DAYS_AGO[p.slug]),
 }));
+
+// 데모 주문 — 판매수(salesCount)는 이 주문들에서 계산한다 (원본은 주문, 판매수는 파생값)
+const PAYMENTS = ["CARD", "BANK_TRANSFER", "EASY_PAY"] as const;
+const demoOrders: {
+  orderNo: string;
+  ago: number;
+  status: Prisma.OrderCreateInput["status"];
+  lines: [string, number][];
+}[] = [
+  {
+    orderNo: "20260918-0001",
+    ago: 20,
+    status: "DELIVERED",
+    lines: [
+      ["butter-croissant", 6],
+      ["salt-bread", 4],
+      ["americano", 2],
+    ],
+  },
+  {
+    orderNo: "20260921-0001",
+    ago: 17,
+    status: "DELIVERED",
+    lines: [
+      ["butter-croissant", 5],
+      ["campagne", 3],
+      ["chocolate-brownie", 3],
+    ],
+  },
+  {
+    orderNo: "20260924-0001",
+    ago: 14,
+    status: "DELIVERED",
+    lines: [
+      ["salt-bread", 5],
+      ["americano", 4],
+      ["chocolate-chip-cookie", 3],
+    ],
+  },
+  {
+    orderNo: "20260926-0001",
+    ago: 12,
+    status: "DELIVERED",
+    lines: [
+      ["strawberry-cake", 2],
+      ["basque-cheesecake", 2],
+      ["earl-grey-scone", 2],
+    ],
+  },
+  {
+    orderNo: "20260929-0001",
+    ago: 9,
+    status: "DELIVERED",
+    lines: [
+      ["butter-croissant", 4],
+      ["campagne", 5],
+      ["chocolate-brownie", 3],
+    ],
+  },
+  {
+    orderNo: "20261001-0001",
+    ago: 7,
+    status: "DELIVERED",
+    lines: [
+      ["salt-bread", 4],
+      ["americano", 3],
+      ["chocolate-chip-cookie", 3],
+      ["butter-cookie", 2],
+    ],
+  },
+  {
+    orderNo: "20261003-0001",
+    ago: 5,
+    status: "SHIPPING",
+    lines: [
+      ["butter-croissant", 4],
+      ["campagne", 3],
+      ["royal-milk-tea", 2],
+    ],
+  },
+  {
+    orderNo: "20261005-0001",
+    ago: 3,
+    status: "PREPARING",
+    lines: [
+      ["salt-bread", 4],
+      ["chocolate-brownie", 2],
+      ["earl-grey-scone", 2],
+      ["baguette", 1],
+    ],
+  },
+  {
+    orderNo: "20261006-0003",
+    ago: 2,
+    status: "PREPARING",
+    lines: [
+      ["butter-croissant", 3],
+      ["americano", 3],
+      ["strawberry-cake", 2],
+      ["basque-cheesecake", 3],
+    ],
+  },
+  {
+    orderNo: "20261007-0003",
+    ago: 1,
+    status: "RECEIVED",
+    lines: [
+      ["campagne", 2],
+      ["chocolate-brownie", 2],
+      ["chocolate-chip-cookie", 2],
+      ["butter-cookie", 1],
+      ["royal-milk-tea", 1],
+      ["baguette", 1],
+    ],
+  },
+];
+
+async function seedDemoOrders() {
+  const bySlug = new Map((await db.product.findMany()).map((p) => [p.slug, p]));
+  let created = 0;
+  for (const [i, o] of demoOrders.entries()) {
+    if (await db.order.findUnique({ where: { orderNo: o.orderNo } })) continue; // 다시 실행해도 중복 생성하지 않음
+    const lines = o.lines.map(([slug, quantity]) => {
+      const product = bySlug.get(slug)!;
+      return {
+        productId: product.id,
+        productName: product.name,
+        unitPrice: product.price,
+        quantity,
+        giftWrap: false,
+        lineTotal: product.price * quantity,
+      };
+    });
+    const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
+    const shippingFee = shippingFeeFor(subtotal);
+    const n = String(i + 1).padStart(2, "0");
+    await db.order.create({
+      data: {
+        orderNo: o.orderNo,
+        status: o.status,
+        createdAt: daysAgo(o.ago),
+        paymentMethod: PAYMENTS[i % 3],
+        ordererName: `데모고객${n}`,
+        ordererPhone: `010-0000-00${n}`,
+        ordererEmail: `demo${n}@example.com`,
+        recipientName: `데모고객${n}`,
+        recipientPhone: `010-0000-00${n}`,
+        address: `서울시 성동구 데모로 ${i + 1}`,
+        addressDetail: `${i + 1}0${i + 1}호`,
+        subtotal,
+        shippingFee,
+        total: subtotal + shippingFee,
+        items: { create: lines },
+      },
+    });
+    created++;
+  }
+  console.log(`seeded ${created} demo orders (existing: ${demoOrders.length - created})`);
+}
 
 async function main() {
   for (const product of products) {
-    await db.product.upsert({ where: { slug: product.slug }, update: product, create: product });
+    // 다시 실행해도 등록일과 판매수는 덮어쓰지 않는다
+    const { createdAt, ...rest } = product;
+    void createdAt;
+    await db.product.upsert({ where: { slug: product.slug }, update: rest, create: product });
   }
   console.log(`seeded ${products.length} products`);
+  await seedDemoOrders();
+  const { diff } = await recountSales(db, true); // 판매수를 주문 기준으로 맞춘다
+  console.log(`sales counts synced (${diff.length} adjusted)`);
 }
 
 main()

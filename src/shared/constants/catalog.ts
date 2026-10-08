@@ -17,3 +17,6 @@ export function shippingFeeFor(subtotal: number): number {
 
 /** 선물 포장 옵션 추가 금액 */
 export const GIFT_WRAP_FEE = 1000;
+
+/** 상품 목록 정렬 — popular: 판매수 순, latest: 최신 등록 순 */
+export type ProductSort = "latest" | "popular";

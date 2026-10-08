@@ -2,7 +2,9 @@ import Link from "next/link";
 import { getProducts } from "@/server/services/product";
 import { categoryFromSlug, CATEGORY_DISPLAY } from "../categories";
 import { CatalogFilterBar } from "./CatalogFilterBar";
+import { sortFromParam } from "../sort";
 import { ProductCard } from "./ProductCard";
+import { SortSelect } from "./SortSelect";
 
 /*
  * 상품 목록 · 검색 결과 (Figma: Product List 7:171 / 9:995, Search Result 7:603 / 9:1159)
@@ -18,7 +20,9 @@ export async function ProductCatalog({ searchParams }: { searchParams: SearchPar
   const rawQ = typeof params.q === "string" ? params.q.trim().slice(0, MAX_QUERY_LENGTH) : "";
   const q = rawQ || undefined;
 
-  const products = await getProducts({ category: category?.value, q });
+  const sort = sortFromParam(params.sort);
+
+  const products = await getProducts({ category: category?.value, q, sort });
 
   return (
     <>
@@ -40,10 +44,11 @@ export async function ProductCatalog({ searchParams }: { searchParams: SearchPar
 
       <section className="mx-auto max-w-[1440px] px-5 pt-6 pb-16 lg:px-20 lg:pt-10 lg:pb-24">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <CatalogFilterBar category={category?.slug} q={q} />
-          <p className="shrink-0 type-body-sm text-caption">
-            {q ? `${products.length}개의 상품` : `총 ${products.length}개`}
-          </p>
+          <CatalogFilterBar category={category?.slug} q={q} sort={sort === "latest" ? sort : undefined} />
+          <div className="flex shrink-0 items-center gap-4 type-body-sm text-caption">
+            <span>{q ? `${products.length}개의 상품` : `총 ${products.length}개`}</span>
+            <SortSelect value={sort} />
+          </div>
         </div>
 
         {products.length > 0 ? (
