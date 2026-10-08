@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/features/shop/layout/PagePlaceholder";
+import { HomePage } from "@/features/shop/home/components/HomePage";
 
 export default function Page() {
-  return <PagePlaceholder title="홈" owner="feat/shop-catalog" />;
+  return <HomePage />;
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Search, ShoppingBag, User } from "lucide-react";
+import { ShoppingBag, User } from "lucide-react";
+import { SearchDialog } from "@/features/shop/search/components/SearchDialog";
 import { Button } from "@/shared/ui/button";
 import { CartCountBadge } from "./CartCountBadge";
 import { CATEGORY_LINKS, SHOP_INFO } from "./nav";
@@ -23,9 +24,7 @@ export function ShopHeader() {
         </nav>
 
         <div className="flex items-center gap-5 text-heading">
-          <Link href="/search" aria-label="검색">
-            <Search className="size-6" strokeWidth={1.5} />
-          </Link>
+          <SearchDialog />
           <Link href="/cart" aria-label="장바구니" className="relative">
             <ShoppingBag className="size-6" strokeWidth={1.5} />
             <CartCountBadge />
