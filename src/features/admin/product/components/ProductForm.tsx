@@ -263,7 +263,7 @@ function ProductFields({
           <Select value={values.category} onValueChange={(v) => set("category", v as Category)}>
             <SelectTrigger
               id={fid("category")}
-              className="h-12 w-full rounded-input border-line bg-page px-4 type-body-md text-heading shadow-none data-[size=default]:h-12 dark:bg-page dark:hover:bg-page"
+              className={FIELD_CLASS}
             >
               <SelectValue />
             </SelectTrigger>
