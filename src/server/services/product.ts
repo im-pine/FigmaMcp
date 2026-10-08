@@ -9,17 +9,21 @@ import { db } from "@/server/db";
  * 상세는 상품별 태그(product:<slug>)도 함께 달아 한 상품만 갱신할 수 있게 한다.
  */
 
+export type ProductSort = "latest" | "popular";
+
 export type ProductFilter = {
   category?: Category;
   /** 상품명(한글 · 영문) 부분 일치 검색어 */
   q?: string;
+  /** 정렬 — 기본 popular. latest: 등록 최신순, popular: 판매수 많은 순(같으면 최신순) */
+  sort?: ProductSort;
 };
 
-/** 상품 목록 — 카테고리 · 검색어 필터, 등록 순 */
+/** 상품 목록 — 카테고리 · 검색어 필터 + 정렬. 판매수가 바뀌면 updateTag('product-sales')로 갱신한다 */
 export async function getProducts(filter: ProductFilter = {}): Promise<Product[]> {
   "use cache";
   cacheLife("hours");
-  cacheTag("products");
+  cacheTag("products", "product-sales");
 
   const q = filter.q?.trim();
   return db.product.findMany({
@@ -32,7 +36,11 @@ export async function getProducts(filter: ProductFilter = {}): Promise<Product[]
         ],
       }),
     },
-    orderBy: { id: "asc" },
+    // id를 마지막 기준으로 두어 같은 값끼리도 순서가 항상 같게 한다
+    orderBy:
+      filter.sort === "latest"
+        ? [{ createdAt: "desc" }, { id: "desc" }]
+        : [{ salesCount: "desc" }, { createdAt: "desc" }, { id: "desc" }],
   });
 }
 
@@ -64,7 +72,8 @@ export async function getRelatedProducts(product: Pick<Product, "id" | "category
   cacheLife("hours");
   cacheTag("products");
 
-  const others = (await getProducts()).filter((p) => p.id !== product.id);
+  // 추천은 판매수와 무관하게 등록 순으로 고정한다 (판매가 생길 때마다 추천이 바뀌지 않게)
+  const others = (await getProducts()).filter((p) => p.id !== product.id).sort((a, b) => a.id - b.id);
   const picks: Product[] =
     product.category === "BEVERAGE"
       ? others.filter((p) => p.category !== "BEVERAGE").slice(0, 4)

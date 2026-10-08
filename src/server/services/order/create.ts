@@ -2,6 +2,7 @@ import "server-only";
 import { Prisma, type Order, type OrderItem } from "@/generated/prisma/client";
 import { db } from "@/server/db";
 import { GIFT_WRAP_FEE, shippingFeeFor } from "@/shared/constants/catalog";
+import { applySalesDelta } from "./sales";
 
 /** 주문 생성 입력 — 검증(safeParse)은 Server Action에서 끝낸 값을 받는다. 가격 필드는 받지 않는다. */
 export type CreateOrderInput = Pick<
@@ -45,7 +46,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
           select: { orderNo: true },
         });
         const seq = last ? Number(last.orderNo.slice(prefix.length + 1)) + 1 : 1;
-        return tx.order.create({
+        const created = await tx.order.create({
           data: {
             ...orderer,
             orderNo: `${prefix}-${String(seq).padStart(4, "0")}`,
@@ -56,6 +57,9 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
           },
           select: { orderNo: true },
         });
+        // 인기순 정렬용 판매수 — 주문과 같은 트랜잭션에서 올린다
+        await applySalesDelta(tx, lines, 1);
+        return created;
       });
       return { ok: true, orderNo: order.orderNo };
     } catch (error) {

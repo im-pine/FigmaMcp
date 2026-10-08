@@ -9,21 +9,23 @@ import { Chip } from "@/shared/ui/Chip";
  * 상품 목록 필터 (Figma: Product List · Search Result)
  * - 카테고리 칩: ?category=bread … (All은 category 제거). 검색어는 유지한다
  * - 검색어 칩: ✕를 누르면 q만 지우고 카테고리는 유지한다
+ * - 정렬(sort)은 어느 쪽을 눌러도 유지한다. 기본(인기순)은 주소에 넣지 않으므로 "latest"일 때만 받는다
  */
 const CHIPS = [
   { label: "All", slug: undefined },
   ...CATEGORIES.map((c) => ({ label: c.label, slug: c.slug })),
 ];
 
-function catalogHref(category?: string, q?: string) {
+function catalogHref(category?: string, q?: string, sort?: string) {
   const params = new URLSearchParams();
   if (q) params.set("q", q);
   if (category) params.set("category", category);
+  if (sort) params.set("sort", sort);
   const query = params.toString();
   return query ? `/products?${query}` : "/products";
 }
 
-export function CatalogFilterBar({ category, q }: { category?: string; q?: string }) {
+export function CatalogFilterBar({ category, q, sort }: { category?: string; q?: string; sort?: string }) {
   const router = useRouter();
   const go = (href: string) => router.push(href, { scroll: false });
 
@@ -36,7 +38,7 @@ export function CatalogFilterBar({ category, q }: { category?: string; q?: strin
             <button
               type="button"
               aria-label={`검색어 '${q}' 지우기`}
-              onClick={() => go(catalogHref(category))}
+              onClick={() => go(catalogHref(category, undefined, sort))}
               className="rounded-full p-0.5 hover:bg-primary-300"
             >
               <X className="size-4" />
@@ -49,7 +51,7 @@ export function CatalogFilterBar({ category, q }: { category?: string; q?: strin
         <Chip
           key={c.label}
           selected={c.slug === category}
-          onClick={() => go(catalogHref(c.slug, q))}
+          onClick={() => go(catalogHref(c.slug, q, sort))}
           className="shrink-0"
         >
           {c.label}
