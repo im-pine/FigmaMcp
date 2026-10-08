@@ -124,27 +124,30 @@ export async function updateOrderStatuses(orderNos: string[], status: OrderStatu
     });
     if (orders.length === 0) return { updated: 0, salesChanged: false };
 
-    await tx.order.updateMany({
-      where: { id: { in: orders.map((o) => o.id) } },
-      data: { status },
-    });
+    // 읽은 상태 그대로일 때만 바꾼다. 다른 관리자가 같은 주문을 동시에 바꿨다면 건너뛰어
+    // 판매수가 두 번 빠지거나 더해지지 않게 한다.
+    const changed: typeof orders = [];
+    for (const o of orders) {
+      const { count } = await tx.order.updateMany({ where: { id: o.id, status: o.status }, data: { status } });
+      if (count === 1) changed.push(o);
+    }
 
     let salesChanged = false;
     if (status === "CANCELED") {
       // 취소로 바뀐 주문만큼 판매수를 뺀다
-      const lines = orders.flatMap((o) => o.items);
+      const lines = changed.flatMap((o) => o.items);
       if (lines.length > 0) {
         await applySalesDelta(tx, lines, -1);
         salesChanged = true;
       }
     } else {
       // 취소에서 되살린 주문만큼 판매수를 다시 더한다
-      const lines = orders.filter((o) => o.status === "CANCELED").flatMap((o) => o.items);
+      const lines = changed.filter((o) => o.status === "CANCELED").flatMap((o) => o.items);
       if (lines.length > 0) {
         await applySalesDelta(tx, lines, 1);
         salesChanged = true;
       }
     }
-    return { updated: orders.length, salesChanged };
+    return { updated: changed.length, salesChanged };
   });
 }
