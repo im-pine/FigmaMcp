@@ -2,8 +2,8 @@ import Image from "next/image";
 import { SHOP_INFO } from "./nav";
 
 /*
- * 브랜드 로고 (Figma: Components > Brand). 투명 PNG라 밝은 배경(헤더)에서만 쓴다.
- * 어두운 배경인 푸터는 짙은 그린 로고가 보이지 않아 텍스트 로고를 그대로 쓴다.
+ * 브랜드 로고 (Figma: Components > Brand). 투명 PNG(짙은 그린)라 어두운 푸터에서는 잘 안 보인다.
+ * 푸터용 밝은 로고는 디자인 디테일 정리 때 정한다.
  */
 export function BrandLogo({ height }: { height: number }) {
   return (
