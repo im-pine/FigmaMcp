@@ -53,6 +53,10 @@ model Product {
   /// public 기준 경로 (예: /images/products/butter-croissant.jpg)
   imagePath    String
   isBest       Boolean     @default(false)
+  /// 누적 판매 수량 (취소되지 않은 주문의 수량 합계). 인기순 정렬용으로 조회 때마다 세지 않고 저장한다.
+  /// 원본은 OrderItem이고 이 값은 파생값이다 → `pnpm db:recount`로 언제든 다시 계산할 수 있다.
+  /// 증가 · 감소는 server/services/order/sales.ts의 applySalesDelta로만 한다. 인덱스는 두지 않는다 (docs: Wiki Data).
+  salesCount   Int         @default(0)
   ingredients  String
   storageGuide String
   allergens    String
