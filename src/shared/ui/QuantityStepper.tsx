@@ -16,7 +16,7 @@ export function QuantityStepper({ value, onChange, min = 1, max = 99, className 
   return (
     <div
       className={cn(
-        "inline-flex h-10 items-center gap-4 rounded-pill border border-line bg-card px-3.5",
+        "inline-flex h-10 w-fit items-center gap-4 rounded-pill border border-line bg-card px-3.5",
         className,
       )}
     >

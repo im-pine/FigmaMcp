@@ -47,6 +47,7 @@ prisma/                 schema.prisma · migrations · seed.ts
 - 브랜치: `main` ← `dev` ← `<feat|fix|docs>/<shop|admin|common>-<기능>` (영문 소문자 · 하이픈). `main` · `dev`에 직접 커밋 금지
 - 커밋: `<gitmoji> <type>(<scope>): <요약>` (✨ feat · 🐛 fix · 💄 style · ♻️ refactor · 📝 docs · ✅ test · 🔧 chore · 🍱 assets · 🔥 remove)
 - PR: base `dev`, 제목 = 커밋 메시지 형식(squash 시 그대로 커밋됨), 본문은 `.github/pull_request_template.md`(What · Review 최대 3개 · How to test, 짧은 불릿). 머지는 사용자가 승인 후 squash
+- **PR을 올리기 전에 Review 항목을 직접 검증한다.** 화면은 실제 브라우저로 확인한다(헤드리스 Chrome + DevTools 프로토콜로 스크린샷 · 탭 · 애니메이션 프레임, 모바일은 390px 에뮬레이션). 보고할 때 항목별로 "확인함 / 판단 필요"를 구분하고, 사람의 판단이 필요한 것만 묻는다
 - PR 없이 하는 작업(문서 등)은 사용자가 요청할 때만 커밋 · 푸시
 - 병렬 작업은 worktree로: `git worktree add ../FigmaMcp-<영역>-<기능> -b feat/<영역>-<기능> dev` → `.env` 복사 → `pnpm install`
 - `gh`는 `~/.local/bin/gh`에 있다 (PATH에 없음)

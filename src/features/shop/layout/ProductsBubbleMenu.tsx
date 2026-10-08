@@ -33,7 +33,7 @@ export function ProductsBubbleMenu({ open, onClose }: { open: boolean; onClose: 
       />
       {/* 버블 기준점 = 상품 버튼 중심 */}
       <nav
-        aria-label="카테고리"
+        aria-label="상품 카테고리 메뉴"
         aria-hidden={!open}
         className="pointer-events-none fixed bottom-[calc(54px+env(safe-area-inset-bottom))] left-1/2 z-50 size-0 lg:hidden"
       >
