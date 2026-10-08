@@ -1,11 +1,15 @@
 ## What
-<!-- What changed, 1–2 bullets -->
+<!-- 무엇을 바꿨는지 1~2개 불릿. 내용은 한글로, 한 불릿에 한 가지만 -->
 -
 
 ## Review
-<!-- Only what the reviewer must check: UI, behavior, decisions. Max 3 -->
+<!--
+검토할 것 최대 3개 (화면, 동작, 결정이 필요한 것).
+PR을 올리기 전에 직접 검증하고, 검증한 항목은 [x]로 체크한 뒤 어떻게 확인했는지 괄호로 적는다.
+사람의 판단이 필요한 항목만 [ ]로 남긴다.
+-->
 - [ ]
 
 ## How to test
-<!-- Command to run or screen to open -->
+<!-- 실행할 명령이나 열어 볼 화면 -->
 -
