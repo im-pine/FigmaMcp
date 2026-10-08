@@ -8,7 +8,6 @@ export const CATEGORY_LINKS = [
 
 export const SHOP_INFO = {
   name: "Pine Bakery",
-  tagline: "BAKERY & DESSERT",
   description: "매일 아침 직접 굽는 빵과 디저트를 전합니다.",
   address: "서울시 성동구 베이커리로 12",
   phone: "02-000-0000",
