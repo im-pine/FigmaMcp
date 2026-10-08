@@ -1,5 +1,8 @@
-import { PagePlaceholder } from "@/features/shop/layout/PagePlaceholder";
+import type { Metadata } from "next";
+import { CartView } from "@/features/shop/cart/components/CartView";
 
-export default function Page() {
-  return <PagePlaceholder title="장바구니" owner="feat/shop-checkout" />;
+export const metadata: Metadata = { title: "장바구니 | Pine Bakery" };
+
+export default function CartPage() {
+  return <CartView />;
 }
