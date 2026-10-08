@@ -96,7 +96,8 @@ macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며
 | Client State | Zustand | 장바구니 같은 단순한 전역 상태를 store 하나로 관리 |
 | Styling | Tailwind CSS | 디자인 토큰을 utility로 바로 옮겨 빠르게 반영 |
 | UI Components | shadcn/ui | Tailwind 구조를 유지하면서 반복 UI 구현 시간 단축 |
-| Testing | Jest | 마무리 단계의 테스트 코드 작성 |
+| Unit · Integration Test | Jest + Testing Library | 계산 · 검증 · 권한 로직과 컴포넌트를 사용자 행동 기준으로 테스트 (Next.js 공식 설정) |
+| E2E Test | Playwright | 구매 → 주문조회 핵심 흐름을 실제 브라우저(데스크톱 · 모바일)로 확인 (Next.js 공식 가이드) |
 
 ## 🧠 핵심 설계
 
@@ -142,6 +143,25 @@ pnpm dev            # http://localhost:3000  (디자인 시스템 미리보기: 
 | `pnpm typecheck` | 라우트 타입 생성 + TypeScript 검사 |
 | `pnpm format` | Prettier |
 | `pnpm db:studio` | Prisma Studio |
+
+### Testing
+
+```bash
+cp .env.test.example .env.test   # 테스트 전용 DB(figmamcp_test) — 통합 · E2E가 비우고 다시 채움
+pnpm test                         # 단위 · 컴포넌트 (DB 없음)
+pnpm test:integration             # 서버 로직 + 테스트 DB
+pnpm test:e2e                     # 프로덕션 빌드를 3800 포트에 띄워 브라우저로 확인
+```
+
+| 도구 | 쓰는 곳 | 고른 이유 |
+| --- | --- | --- |
+| Jest 30 | 단위 · 통합 테스트 실행 | Next.js 공식 설정(`next/jest`) 지원, 주간 다운로드 5천만+ · 2026-09 릴리스 |
+| Testing Library (react · dom · jest-dom · user-event) | 컴포넌트 · store 테스트 | 내부 구현이 아니라 사용자가 보는 화면 · 클릭 기준으로 테스트. user-event는 실제 입력 순서를 흉내 냄 |
+| jest-environment-jsdom | 컴포넌트 테스트 환경 | 브라우저 없이 DOM을 실행 (Next.js 문서 권장) |
+| Playwright 1.63 | E2E | 실제 브라우저 · 모바일 화면 에뮬레이션 내장, 서버 자동 실행(`webServer`). 주간 다운로드 8천만+ · 2026-09 릴리스 |
+
+- 비동기 Server Component는 Jest가 지원하지 않아(Next.js 문서) 화면 흐름은 E2E로 확인합니다.
+- 테스트 항목 선정 기준과 구성은 [Wiki — Testing](https://github.com/im-pine/FigmaMcp/wiki/Project%E2%80%90Testing)에 정리했습니다. PR마다 GitHub Actions에서 자동으로 실행됩니다.
 
 폴더 구조와 개발 규칙은 [`CLAUDE.md`](./CLAUDE.md)를 참고하세요.
 

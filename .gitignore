@@ -22,6 +22,7 @@ next-env.d.ts
 # env
 .env*
 !.env.example
+!.env.test.example
 
 # logs
 npm-debug.log*
@@ -33,3 +34,9 @@ yarn-error.log*
 # vercel
 .vercel
 *.pem
+
+# test
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

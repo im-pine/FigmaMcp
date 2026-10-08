@@ -14,7 +14,11 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "db:recount": "tsx prisma/recount-sales.ts"
+    "db:recount": "tsx prisma/recount-sales.ts",
+    "test": "jest -c jest.config.mjs",
+    "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest -c jest.integration.config.mjs --runInBand",
+    "test:e2e": "playwright test",
+    "test:all": "pnpm test && pnpm test:integration && pnpm test:e2e"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.0",
@@ -34,7 +38,14 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@jest/globals": "30.5.2",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/turbopack": "^4",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
+    "@types/jest": "30.0.0",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
@@ -42,6 +53,8 @@
     "dotenv": "^18.0.6",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
+    "jest": "30.5.2",
+    "jest-environment-jsdom": "30.5.2",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "prisma": "7.10.0",

@@ -1,0 +1,66 @@
+# PR마다 테스트를 자동으로 돌린다 (dev · main 대상).
+# 테스트 전용 Postgres 컨테이너를 띄워 통합 · E2E 테스트가 실제 DB로 동작하는지 확인한다.
+name: Test
+
+on:
+  pull_request:
+    branches: [dev, main]
+
+env:
+  DATABASE_URL: postgresql://test:test@localhost:5432/figmamcp_test?schema=public
+  ADMIN_PASSWORD: test-admin-password
+
+jobs:
+  unit-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: figmamcp_test
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U test" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: printf 'DATABASE_URL="%s"\nADMIN_PASSWORD="%s"\n' "$DATABASE_URL" "$ADMIN_PASSWORD" > .env.test
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm test:integration
+
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: figmamcp_test
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U test" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: printf 'DATABASE_URL="%s"\nADMIN_PASSWORD="%s"\n' "$DATABASE_URL" "$ADMIN_PASSWORD" > .env.test
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
