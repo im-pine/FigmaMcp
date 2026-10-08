@@ -1,0 +1,100 @@
+/*
+ * 디자인 토큰 — Figma Variables(Primitives · Semantic)의 code syntax와 같은 이름을 쓴다.
+ * 값의 출처: docs/design-brief.md, Figma Components 페이지의 Colors 보드.
+ * 화면 코드에서는 스케일 값을 직접 쓰지 말고 시맨틱 토큰(Tailwind 유틸: bg-page, text-heading 등)을 쓴다.
+ */
+:root {
+  /* brown — 바탕 · 글자 */
+  --brown-50: #fcfaf6;
+  --brown-100: #f8f2eb;
+  --brown-200: #ece1d1;
+  --brown-300: #dfcdb8;
+  --brown-400: #c5a88a;
+  --brown-500: #ae835a;
+  --brown-600: #986e48;
+  --brown-700: #805940;
+  --brown-800: #684432;
+  --brown-900: #4d3121;
+
+  /* primary — 브랜드 그린, 클릭 요소 전용 */
+  --primary-50: #f8faf8;
+  --primary-100: #f1f4f1;
+  --primary-200: #dce4db;
+  --primary-300: #c6d4c6;
+  --primary-400: #9cb49b;
+  --primary-500: #719470;
+  --primary-600: #607e5f;
+  --primary-700: #4f684e;
+  --primary-800: #3e513e;
+  --primary-900: #2d3b2d;
+
+  /* secondary — 브랜드 핑크 (케이크 카테고리) */
+  --secondary-50: #fdfbfb;
+  --secondary-100: #fcf7f8;
+  --secondary-200: #f7eced;
+  --secondary-300: #f3e1e2;
+  --secondary-400: #e9cacc;
+  --secondary-500: #e0b3b6;
+  --secondary-600: #be989b;
+  --secondary-700: #9d7d7f;
+  --secondary-800: #7b6264;
+  --secondary-900: #5a4849;
+
+  /* honey — 쿠키 카테고리 */
+  --honey-50: #fcf9f4;
+  --honey-100: #f9f3e7;
+  --honey-200: #f1e0c2;
+  --honey-300: #e8cd9d;
+  --honey-400: #d6a551;
+  --honey-500: #b5822a;
+  --honey-600: #9a6f24;
+  --honey-700: #7f5c1e;
+  --honey-800: #634817;
+  --honey-900: #493411;
+
+  /* mauve — 음료 카테고리 */
+  --mauve-50: #fbf8fb;
+  --mauve-100: #f7f2f7;
+  --mauve-200: #e9dfe9;
+  --mauve-300: #dccbdc;
+  --mauve-400: #c3a4c3;
+  --mauve-500: #a97da9;
+  --mauve-600: #976597;
+  --mauve-700: #7d537d;
+  --mauve-800: #614161;
+  --mauve-900: #472f47;
+
+  --white: #ffffff;
+
+  /* Semantic (Figma: Semantic collection) */
+  --bg-page: var(--brown-100);
+  --bg-card: var(--brown-50);
+  --bg-section: var(--brown-200);
+  --bg-inverse: var(--brown-900);
+
+  --border-default: var(--brown-300);
+  --border-strong: var(--brown-900);
+
+  --text-heading: var(--brown-900);
+  --text-body: var(--brown-800);
+  --text-caption: var(--brown-700);
+  --text-link: var(--primary-700);
+  --text-inverse: var(--brown-100);
+  --text-on-action: var(--white);
+
+  --action-primary: var(--primary-600);
+  --action-primary-hover: var(--primary-700);
+
+  --badge-bg: var(--primary-200);
+  --badge-text: var(--primary-800);
+
+  --decor-default: var(--brown-500);
+
+  --category-all: var(--primary-200);
+  --category-bread: var(--brown-300);
+  --category-cake: var(--secondary-400);
+  --category-cookie: var(--honey-300);
+  --category-beverage: var(--mauve-300);
+
+  /* Radius · Shadow는 Tailwind 테마(globals.css @theme)에서 정의한다: --radius-card · --radius-input · --radius-pill · --shadow-card */
+}

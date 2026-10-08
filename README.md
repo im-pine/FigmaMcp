@@ -107,18 +107,16 @@ macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며
 
 ## ⚙️ Getting Started
 
-> 프로젝트 초기화 전입니다. 개발 환경이 구성되면 아래 내용을 갱신합니다.
-
 ### Requirements
 
-- Node.js `[추가 정보 필요: 버전]`
-- Docker (로컬 PostgreSQL 실행용, 기존 PostgreSQL 컨테이너에 이 프로젝트 전용 DB를 생성해 사용)
+- Node.js 24 이상
+- pnpm 10 (`corepack enable pnpm`)
+- Docker (로컬 PostgreSQL)
 
 ### Environment Variables
 
-```dotenv
-DATABASE_URL=
-ADMIN_PASSWORD=
+```bash
+cp .env.example .env
 ```
 
 | 변수 | 설명 |
@@ -128,7 +126,22 @@ ADMIN_PASSWORD=
 
 ### Installation & Development
 
-`[추가 정보 필요: 패키지 매니저 및 package.json scripts]`
+```bash
+pnpm install        # 설치 후 Prisma client · Zod 스키마 자동 생성
+pnpm db:migrate     # DB 마이그레이션
+pnpm db:seed        # 상품 12종 시드
+pnpm dev            # http://localhost:3000  (디자인 시스템 미리보기: /dev/ui)
+```
+
+| Command | Description |
+| --- | --- |
+| `pnpm build` | 프로덕션 빌드 |
+| `pnpm lint` | ESLint (영역 경계 규칙 포함) |
+| `pnpm typecheck` | 라우트 타입 생성 + TypeScript 검사 |
+| `pnpm format` | Prettier |
+| `pnpm db:studio` | Prisma Studio |
+
+폴더 구조와 개발 규칙은 [`CLAUDE.md`](./CLAUDE.md)를 참고하세요.
 
 ---
 
