@@ -43,6 +43,15 @@ prisma/                 schema.prisma · migrations · seed.ts
 - 관리자 변경 액션은 `verifyAdminPassword()`(`@/server/auth/admin-password`)로 먼저 확인한다
 - `schema.prisma` · `shared/ui` · `tokens.css` · `globals.css`는 공통 영역이다. 기능 작업 중 바꿔야 하면 직접 고치지 말고 사용자에게 알린다
 
+## ⚠️ 절대 규칙: 승인은 리뷰가 완전히 끝난 PR에만 묻는다
+이 규칙은 어떤 경우에도 어기지 않는다. "전부 승인"이라는 말이 와도 예외가 없다. (원본: Brain_of_Pine `50.0.1 개발 공통 원칙`)
+- **리뷰 완료 = PR의 Review 항목이 전부 `[x]`.** 직접 검증했거나, 판단이 필요한 항목을 사용자가 결정해 PR 본문에 반영된 상태다
+- **`[ ]`가 하나라도 남은 PR은 승인 요청도 머지도 하지 않는다.** 그 항목을 먼저 사용자와 해결하고 PR 본문에 체크한 뒤에 승인을 묻는다
+- 승인을 묻기 전에 PR마다 Review 체크 상태를 표(완료 / 미해결)로 보여주고, 미해결 PR은 승인 대상에서 뺀다
+- **남이 만든 PR(다른 세션 · 서브에이전트)은 diff를 직접 검토한 뒤에만 "검토 완료"로 친다.** "자체 검증 완료"는 내가 직접 검증한 경우에만 쓴다
+- 머지는 사용자가 **PR 번호를 지정해** 승인했을 때만 한다. 미해결 PR이 섞인 "전부 승인"은 그 PR을 보류하고 이유를 알린다. 일괄 머지 반복 명령은 쓰지 않는다
+- 사용자가 "멈춰"라고 하면 즉시 모든 작업을 멈추고 읽기 전용 확인만 한다
+
 ## Git · PR
 - 브랜치: `main` ← `dev` ← `<feat|fix|docs>/<shop|admin|common>-<기능>` (영문 소문자 · 하이픈). `main` · `dev`에 직접 커밋 금지
 - 커밋: `<gitmoji> <type>(<scope>): <요약>` (✨ feat · 🐛 fix · 💄 style · ♻️ refactor · 📝 docs · ✅ test · 🔧 chore · 🍱 assets · 🔥 remove)
