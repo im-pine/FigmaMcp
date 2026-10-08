@@ -1,4 +1,4 @@
-import type { ProductSort } from "@/server/services/product";
+import type { ProductSort } from "@/shared/constants/catalog";
 
 export type SortValue = ProductSort;
 

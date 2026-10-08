@@ -2,6 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import type { Category, Product } from "@/generated/prisma/client";
 import { db } from "@/server/db";
+import type { ProductSort } from "@/shared/constants/catalog";
 
 /*
  * 쇼핑몰 상품 조회.
@@ -9,13 +10,11 @@ import { db } from "@/server/db";
  * 상세는 상품별 태그(product:<slug>)도 함께 달아 한 상품만 갱신할 수 있게 한다.
  */
 
-export type ProductSort = "latest" | "popular";
-
 export type ProductFilter = {
   category?: Category;
   /** 상품명(한글 · 영문) 부분 일치 검색어 */
   q?: string;
-  /** 정렬 — 기본 popular. latest: 등록 최신순, popular: 판매수 많은 순(같으면 최신순) */
+  /** 정렬 — 생략하면 등록 순(id 오름차순, 홈 · 추천용 고정 순서). latest: 최신순, popular: 판매수 많은 순(같으면 최신순) */
   sort?: ProductSort;
 };
 
@@ -40,7 +39,9 @@ export async function getProducts(filter: ProductFilter = {}): Promise<Product[]
     orderBy:
       filter.sort === "latest"
         ? [{ createdAt: "desc" }, { id: "desc" }]
-        : [{ salesCount: "desc" }, { createdAt: "desc" }, { id: "desc" }],
+        : filter.sort === "popular"
+          ? [{ salesCount: "desc" }, { createdAt: "desc" }, { id: "desc" }]
+          : { id: "asc" },
   });
 }
 
@@ -72,8 +73,7 @@ export async function getRelatedProducts(product: Pick<Product, "id" | "category
   cacheLife("hours");
   cacheTag("products");
 
-  // 추천은 판매수와 무관하게 등록 순으로 고정한다 (판매가 생길 때마다 추천이 바뀌지 않게)
-  const others = (await getProducts()).filter((p) => p.id !== product.id).sort((a, b) => a.id - b.id);
+  const others = (await getProducts()).filter((p) => p.id !== product.id);
   const picks: Product[] =
     product.category === "BEVERAGE"
       ? others.filter((p) => p.category !== "BEVERAGE").slice(0, 4)

@@ -30,7 +30,10 @@ export function SortSelect({ value }: { value: SortValue }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="inline-flex items-center gap-1 type-body-sm text-caption outline-none hover:text-heading focus-visible:text-heading">
+      <DropdownMenuTrigger
+        aria-label={`정렬: ${current.label}`}
+        className="inline-flex min-h-10 items-center gap-1 type-body-sm text-caption outline-none hover:text-heading focus-visible:text-heading"
+      >
         {current.label}
         <ChevronDown aria-hidden className="size-4" />
       </DropdownMenuTrigger>
