@@ -36,7 +36,7 @@ prisma/                 schema.prisma · migrations · seed.ts
 ## 데이터 · 서버
 - 조회: Server Component에서 `@/server/services` 호출. Cache Components가 켜져 있으므로 DB 조회는 `'use cache'` + `cacheLife` + `cacheTag`로 캐시하거나 `<Suspense>`로 감싼다
 - 변경: `features/*/<도메인>/actions.ts`('use server') → services. 입력은 `@/generated/zod` 스키마로 `safeParse`, 실패 시 throw 대신 `{ errors }` 반환
-- 변경 후: 서버 캐시는 `updateTag(<tag>)`로 갱신. 클라이언트에서 TanStack Query로 들고 있는 목록(관리자 등)은 `invalidateQueries`도 함께
+- 변경 후: 서버 캐시는 그 Server Action 안에서 `updateTag(<tag>)`로 갱신한다 (쇼핑몰 · 관리자 모두 서버 컴포넌트로 조회하므로 클라이언트 캐시는 따로 두지 않는다). 태그: `products` · `product:<slug>` · `product-sales` · `orders`
 - Prisma 타입을 그대로 쓴다(별도 interface 금지). 클라이언트에서는 `import type`만. 가격은 `Int`(원)
 - 개인정보는 서버에서 `@/shared/lib/mask`로 가린 뒤 내려보낸다. 비회원 주문조회 실패 메시지는 원인을 구분하지 않는다
 - 주문 금액은 클라이언트 값이 아니라 DB 가격으로 다시 계산한다

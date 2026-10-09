@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandLogo } from "./BrandLogo";
+import { BrandLogo } from "@/shared/ui/BrandLogo";
 import { SHOP_INFO } from "./nav";
 
 /** 모바일 헤더 (Figma: MobileHeader) — 로고만 표시. 메뉴는 하단 탭 바가 담당 */

@@ -12,6 +12,8 @@ import { useMediaQuery } from "../hooks/use-media-query";
 import { paymentLabel } from "../payment-methods";
 
 type PaymentModalProps = {
+  /** 닫힐 때 포커스를 돌려줄 요소 (결제창은 프로그램으로 열리므로 직접 지정한다) */
+  returnFocus?: () => HTMLElement | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   method: PaymentMethod;
@@ -27,7 +29,13 @@ type PaymentModalProps = {
  * 결제창 (실제 결제 없음) — 데스크톱은 가운데 Dialog(Figma 8:865), 모바일은 하단 Sheet(Figma 12:1341).
  * 카드 입력칸은 데모용이라 값을 서버로 보내지 않는다.
  */
-export function PaymentModal({ open, onOpenChange, pending, ...props }: PaymentModalProps) {
+export function PaymentModal({ open, onOpenChange, pending, returnFocus, ...props }: PaymentModalProps) {
+  const handleCloseAutoFocus = (e: Event) => {
+    const target = returnFocus?.();
+    if (!target) return;
+    e.preventDefault();
+    target.focus();
+  };
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   // 결제 처리 중에는 닫지 않는다
   const handleOpenChange = (next: boolean) => {
@@ -49,6 +57,7 @@ export function PaymentModal({ open, onOpenChange, pending, ...props }: PaymentM
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent
           showCloseButton={false}
+          onCloseAutoFocus={handleCloseAutoFocus}
           className="gap-0 rounded-card border-0 bg-page p-10 shadow-card sm:max-w-[520px]"
         >
           {body}
@@ -64,6 +73,7 @@ export function PaymentModal({ open, onOpenChange, pending, ...props }: PaymentM
         showCloseButton={false}
         // 모바일에서 첫 입력칸에 자동 포커스되면 키보드가 시트를 가리므로 막는다
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={handleCloseAutoFocus}
         className="max-h-[90dvh] gap-0 overflow-y-auto rounded-t-[20px] border-0 bg-page px-5 pt-3 pb-[calc(32px+env(safe-area-inset-bottom))]"
       >
         <div aria-hidden className="mx-auto mb-5 h-1 w-10 rounded-pill bg-line" />
@@ -100,7 +110,7 @@ function PaymentBody({
       }}
     >
       <div className="flex items-center justify-between">
-        <Title className="type-h3 text-2xl leading-[1.35] font-medium text-heading">{title}</Title>
+        <Title className="type-h3 text-heading">{title}</Title>
         <button
           type="button"
           aria-label="결제창 닫기"

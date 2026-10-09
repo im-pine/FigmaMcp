@@ -19,6 +19,8 @@ const notoSerif = Noto_Serif_KR({
 });
 
 export const metadata: Metadata = {
+  // 탭 제목은 고정 문구만 쓴다 (상품명처럼 불러와야 하는 데이터는 넣지 않는다 — 불러오는 동안 주소가 제목에 보임).
+  // 상품 · 상품 목록 · 홈은 "Pine Bakery" 그대로, 그 밖의 화면은 "주문 내역 | Pine Bakery"처럼 화면 이름을 붙인다.
   title: "Pine Bakery",
   description: "매일 아침 직접 굽는 빵과 디저트 — Figma MCP로 디자인한 베이커리 쇼핑몰",
 };

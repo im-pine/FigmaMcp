@@ -11,7 +11,7 @@ export const SHOP_INFO = {
   description: "매일 아침 직접 굽는 빵과 디저트를 전합니다.",
   address: "서울시 성동구 베이커리로 12",
   phone: "02-000-0000",
-  email: "hello@pinebakery.kr",
+  email: "im.pine.dev@gmail.com",
   copyright: "© 2026 Pine Bakery. 포트폴리오용 데모 사이트입니다.",
 };
 

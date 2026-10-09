@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -12,9 +12,19 @@ const initialState: LookupState = {};
 export function OrderLookupForm() {
   const [state, formAction, pending] = useActionState(lookupOrder, initialState);
   const errors = state.errors;
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // 조회에 실패하면 첫 오류 칸(없으면 주문번호 칸)으로 포커스를 옮긴다
+  useEffect(() => {
+    if (!errors) return;
+    const form = formRef.current;
+    (
+      form?.querySelector<HTMLElement>('[aria-invalid="true"]') ?? form?.querySelector<HTMLElement>("input")
+    )?.focus();
+  }, [errors]);
 
   return (
-    <form action={formAction} className="flex flex-col gap-5" noValidate>
+    <form ref={formRef} action={formAction} className="flex flex-col gap-5" noValidate>
       <div className="flex flex-col gap-2">
         <Label htmlFor="orderNo" className="type-body-sm font-normal text-body">
           주문번호

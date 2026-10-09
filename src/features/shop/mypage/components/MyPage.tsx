@@ -1,4 +1,5 @@
 import { Button } from "@/shared/ui/button";
+import { memberLogin } from "../actions";
 import { OrderLookupForm } from "./OrderLookupForm";
 
 /** 마이페이지 (Figma: MyPage 17:1938 / Mobile 17:1817) — 로그인 카드 하나 */
@@ -23,9 +24,12 @@ export function MyPage() {
           <h2 id="login-title" className="type-h3 text-heading">
             로그인
           </h2>
-          <Button type="button" disabled className="w-full disabled:border">
-            카카오 로그인
-          </Button>
+          {/* 카카오 로그인 전까지 임시 로그인: 로그인 상태를 남기고 데모 회원 주문 내역으로 이동 */}
+          <form action={memberLogin}>
+            <Button type="submit" className="w-full">
+              임시 로그인
+            </Button>
+          </form>
 
           <div className="flex items-center gap-3" role="separator" aria-label="비회원 주문조회">
             <span className="h-px flex-1 bg-line" />
