@@ -42,11 +42,18 @@ export async function HomePage() {
             전체 보기 <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
-        <div className="mt-10 grid grid-cols-4 gap-6">
-          {bestProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        {bestProducts.length > 0 ? (
+          <div className="mt-10 grid grid-cols-4 gap-6">
+            {bestProducts.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        ) : (
+          // 상품이 아직 없는 새 DB(시드 전)에서도 빈 칸처럼 보이지 않게 안내한다
+          <p className="mt-10 rounded-card bg-card px-5 py-16 text-center type-body-md text-caption">
+            곧 맛있는 빵이 준비돼요.
+          </p>
+        )}
       </section>
 
       <StorySection />
