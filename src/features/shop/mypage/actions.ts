@@ -4,6 +4,8 @@ import * as z from "zod";
 import { redirect } from "next/navigation";
 import { OrderSchema } from "@/generated/zod/schemas";
 import { grantOrderAccess } from "@/server/services/order/lookup";
+import { getDemoMemberOrderPhone } from "@/server/services/order/member";
+import { endMemberSession, isMemberLoggedIn, startMemberSession } from "@/server/auth/member-session";
 
 export type LookupState = {
   errors?: { orderNo?: string[]; ordererPhone?: string[]; form?: string[] };
@@ -36,4 +38,29 @@ export async function lookupOrder(_prev: LookupState, formData: FormData): Promi
   if (!granted) return { errors: { form: [LOOKUP_FAILED] }, values };
 
   redirect(`/mypage/orders/${encodeURIComponent(parsed.data.orderNo)}`);
+}
+
+/** 임시 로그인 주문 내역 → 상세 보기. 데모 회원 주문일 때만 접근 쿠키를 주고 상세로 이동한다 */
+export async function openMemberOrder(formData: FormData) {
+  if (!(await isMemberLoggedIn())) redirect("/mypage");
+  const parsed = OrderSchema.shape.orderNo.trim().min(1).safeParse(formData.get("orderNo"));
+  if (!parsed.success) redirect("/mypage/orders");
+
+  const phone = await getDemoMemberOrderPhone(parsed.data);
+  if (!phone || !(await grantOrderAccess({ orderNo: parsed.data, ordererPhone: phone }))) {
+    redirect("/mypage/orders");
+  }
+  redirect(`/mypage/orders/${encodeURIComponent(parsed.data)}`);
+}
+
+/** 임시 로그인 — 로그인 상태를 쿠키에 남기고 주문 내역으로 이동한다 */
+export async function memberLogin() {
+  await startMemberSession();
+  redirect("/mypage/orders");
+}
+
+/** 로그아웃 — 로그인 상태를 지우고 마이페이지(로그인 화면)로 이동한다 */
+export async function memberLogout() {
+  await endMemberSession();
+  redirect("/mypage");
 }

@@ -12,6 +12,10 @@ type QuantityStepperProps = {
   className?: string;
 };
 
+/* 겉모양은 18px 아이콘 그대로, 누르는 영역만 44px로 넓힌다 (UX 공통 원칙: 터치 영역) */
+const STEP_BUTTON =
+  "relative text-heading transition-colors hover:text-link disabled:text-decor disabled:hover:text-decor before:absolute before:top-1/2 before:left-1/2 before:size-11 before:-translate-1/2 before:content-['']";
+
 export function QuantityStepper({ value, onChange, min = 1, max = 99, className }: QuantityStepperProps) {
   return (
     <div
@@ -25,7 +29,7 @@ export function QuantityStepper({ value, onChange, min = 1, max = 99, className 
         aria-label="수량 줄이기"
         disabled={value <= min}
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="text-heading disabled:text-decor"
+        className={STEP_BUTTON}
       >
         <Minus className="size-[18px]" />
       </button>
@@ -37,7 +41,7 @@ export function QuantityStepper({ value, onChange, min = 1, max = 99, className 
         aria-label="수량 늘리기"
         disabled={value >= max}
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="text-heading disabled:text-decor"
+        className={STEP_BUTTON}
       >
         <Plus className="size-[18px]" />
       </button>

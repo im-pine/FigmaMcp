@@ -9,6 +9,7 @@ import { CATEGORY_LINKS } from "./nav";
  * 상품 버블 메뉴 (Figma: Mobile / Products Menu (Open), 모션 사양: Wiki Design)
  * - 가운데 상품 버튼 중심에서 부채꼴(150°→30°)로 퍼진다
  * - 열기: All → Beverage 순으로 40ms 간격, 각 260ms ease-out(spring) / 닫기: 180ms ease-in
+ * - 동작 줄이기(prefers-reduced-motion) 설정이면 애니메이션 없이 바로 나타난다
  */
 const RADIUS = 160;
 const ANGLES = [150, 120, 90, 60, 30];
@@ -27,7 +28,7 @@ export function ProductsBubbleMenu({ open, onClose }: { open: boolean; onClose: 
         aria-hidden
         onClick={onClose}
         className={cn(
-          "fixed inset-0 z-40 bg-inverse/60 transition-opacity duration-200 lg:hidden",
+          "fixed inset-0 z-40 bg-inverse/60 transition-opacity duration-200 motion-reduce:transition-none lg:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       />
@@ -56,7 +57,7 @@ export function ProductsBubbleMenu({ open, onClose }: { open: boolean; onClose: 
                 transitionTimingFunction: open ? "cubic-bezier(0.34, 1.56, 0.64, 1)" : "ease-in",
               }}
               className={cn(
-                "absolute top-0 left-0 flex w-[62px] flex-col items-center gap-1.5 transition-[transform,opacity]",
+                "absolute top-0 left-0 flex w-[62px] flex-col items-center gap-1.5 transition-[transform,opacity] motion-reduce:transition-none",
                 open ? "pointer-events-auto opacity-100" : "opacity-0",
               )}
             >

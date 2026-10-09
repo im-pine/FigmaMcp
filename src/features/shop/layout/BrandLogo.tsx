@@ -2,17 +2,23 @@ import Image from "next/image";
 import { SHOP_INFO } from "./nav";
 
 /*
- * 브랜드 로고 (Figma: Components > Brand). 투명 PNG(짙은 그린)라 어두운 푸터에서는 잘 안 보인다.
- * 푸터용 밝은 로고는 디자인 디테일 정리 때 정한다.
+ * 브랜드 로고 (Figma: Components > Brand). 투명 PNG.
+ * tone="outline"은 어두운 배경(푸터)용 — 원본 윤곽을 따라 베이지(brown-200) 테두리를 두른 버전.
  */
-export function BrandLogo({ height }: { height: number }) {
+const LOGOS = {
+  dark: { src: "/brand/pine-bakery-logo.png", width: 720, height: 392 },
+  outline: { src: "/brand/pine-bakery-logo-outline.png", width: 772, height: 444 },
+} as const;
+
+export function BrandLogo({ height, tone = "dark" }: { height: number; tone?: keyof typeof LOGOS }) {
+  const logo = LOGOS[tone];
   return (
     <Image
-      src="/brand/pine-bakery-logo.png"
+      src={logo.src}
       alt={SHOP_INFO.name}
-      width={Math.round(height * (720 / 392))}
+      width={Math.round(height * (logo.width / logo.height))}
       height={height}
-      priority
+      priority={tone === "dark"}
     />
   );
 }

@@ -6,11 +6,12 @@ import { CATEGORY_LINKS, CUSTOMER_CARE, SHOP_INFO } from "./nav";
 export function ShopFooter() {
   return (
     <footer className="bg-inverse text-on-inverse">
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-7 px-5 pt-12 pb-8 lg:gap-12 lg:px-20 lg:pt-16">
+      <div className="mx-auto max-w-[1440px] px-5 py-8 lg:px-20 lg:py-10">
         <div className="flex flex-col gap-7 lg:flex-row lg:gap-20">
           <div className="flex flex-col gap-2 lg:flex-1 lg:gap-3">
-            <BrandLogo height={56} />
+            <BrandLogo height={60} tone="outline" />
             <p className="type-body-sm opacity-80">{SHOP_INFO.description}</p>
+            <p className="type-body-sm opacity-60">{SHOP_INFO.copyright}</p>
           </div>
           <div className="flex gap-10 lg:gap-20">
             <FooterColumn title="SHOP">
@@ -34,8 +35,6 @@ export function ShopFooter() {
             <span className="type-body-sm">{SHOP_INFO.email}</span>
           </FooterColumn>
         </div>
-        <hr className="border-on-inverse/20" />
-        <p className="type-body-sm opacity-60">{SHOP_INFO.copyright}</p>
       </div>
     </footer>
   );

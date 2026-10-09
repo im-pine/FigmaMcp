@@ -14,6 +14,7 @@ export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
   const result = await createOrder({ ...parsed.data, requestNote: parsed.data.requestNote ?? null });
   if (result.ok) {
     updateTag("product-sales"); // 판매수가 바뀌었으니 인기순 목록 캐시 갱신
+    updateTag("orders"); // 주문 내역 캐시 갱신
     return { orderNo: result.orderNo };
   }
 

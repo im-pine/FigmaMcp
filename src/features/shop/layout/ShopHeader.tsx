@@ -1,10 +1,13 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { ShoppingBag, User } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { SearchDialog } from "@/features/shop/search/components/SearchDialog";
 import { Button } from "@/shared/ui/button";
 import { BrandLogo } from "./BrandLogo";
+import { AccountEntry } from "./AccountEntry";
 import { CartCountBadge } from "./CartCountBadge";
-import { CATEGORY_LINKS, SHOP_INFO } from "./nav";
+import { HeaderNav, HeaderNavLinks } from "./HeaderNav";
+import { SHOP_INFO } from "./nav";
 
 /** 데스크톱 헤더 (Figma: Header) — lg 이상에서만 표시 */
 export function ShopHeader() {
@@ -15,13 +18,9 @@ export function ShopHeader() {
           <BrandLogo height={56} />
         </Link>
 
-        <nav aria-label="카테고리" className="flex gap-10">
-          {CATEGORY_LINKS.map((c) => (
-            <Link key={c.slug} href={c.href} className="type-body-md text-body hover:text-heading">
-              {c.label}
-            </Link>
-          ))}
-        </nav>
+        <Suspense fallback={<HeaderNavLinks />}>
+          <HeaderNav />
+        </Suspense>
 
         <div className="flex items-center gap-5 text-heading">
           <SearchDialog />
@@ -29,9 +28,7 @@ export function ShopHeader() {
             <ShoppingBag className="size-6" strokeWidth={1.5} />
             <CartCountBadge />
           </Link>
-          <Link href="/mypage" aria-label="마이페이지">
-            <User className="size-6" strokeWidth={1.5} />
-          </Link>
+          <AccountEntry variant="header" />
           <Button asChild variant="secondary" size="sm">
             <Link href="/admin">관리자 페이지</Link>
           </Button>

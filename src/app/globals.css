@@ -194,5 +194,25 @@
     background-color: var(--bg-page);
     color: var(--text-body);
     font-family: var(--font-sans);
+    cursor: default; /* 단순 텍스트는 화살표 (UX 공통 원칙: 입력하는 곳만 I빔) */
+  }
+  /* 클릭되는 요소는 손가락, 비활성은 not-allowed (Tailwind v4는 버튼 커서를 default로 둔다) */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="menuitem"],
+  [role="tab"],
+  a[href],
+  summary,
+  label[for],
+  select {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea {
+    cursor: text;
   }
 }

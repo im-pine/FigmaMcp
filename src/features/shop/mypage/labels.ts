@@ -36,3 +36,8 @@ export function formatOrderDate(date: Date): string {
   );
   return `${parts.year}.${parts.month}.${parts.day} ${parts.hour}:${parts.minute}`;
 }
+
+/** 주문 날짜: 2026.10.06 (한국 시간) */
+export function formatOrderDay(date: Date): string {
+  return formatOrderDate(date).slice(0, 10);
+}
