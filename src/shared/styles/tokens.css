@@ -96,5 +96,17 @@
   --category-cookie: var(--honey-300);
   --category-beverage: var(--mauve-300);
 
+  /* 주문 상태 배지 (Figma: StatusBadge) — 취소는 배경 없이 테두리만 */
+  --status-received-bg: var(--honey-200);
+  --status-received-text: var(--honey-800);
+  --status-preparing-bg: var(--badge-bg);
+  --status-preparing-text: var(--badge-text);
+  --status-shipping-bg: var(--mauve-200);
+  --status-shipping-text: var(--mauve-800);
+  --status-delivered-bg: var(--brown-200);
+  --status-delivered-text: var(--brown-700);
+  --status-canceled-border: var(--brown-400);
+  --status-canceled-text: var(--text-caption);
+
   /* Radius · Shadow는 Tailwind 테마(globals.css @theme)에서 정의한다: --radius-card · --radius-input · --radius-pill · --shadow-card */
 }
