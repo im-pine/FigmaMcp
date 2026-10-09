@@ -1,8 +1,7 @@
 import Image from "next/image";
-import { SHOP_INFO } from "./nav";
 
 /*
- * 브랜드 로고 (Figma: Components > Brand). 투명 PNG.
+ * 브랜드 로고 (Figma: Components > Brand) — 쇼핑몰 · 관리자 공용. 투명 PNG.
  * tone="outline"은 어두운 배경(푸터)용 — 원본 윤곽을 따라 베이지(brown-200) 테두리를 두른 버전.
  */
 const LOGOS = {
@@ -15,7 +14,7 @@ export function BrandLogo({ height, tone = "dark" }: { height: number; tone?: ke
   return (
     <Image
       src={logo.src}
-      alt={SHOP_INFO.name}
+      alt="Pine Bakery"
       width={Math.round(height * (logo.width / logo.height))}
       height={height}
       priority={tone === "dark"}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { SearchDialog } from "@/features/shop/search/components/SearchDialog";
 import { Button } from "@/shared/ui/button";
-import { BrandLogo } from "./BrandLogo";
+import { BrandLogo } from "@/shared/ui/BrandLogo";
 import { AccountEntry } from "./AccountEntry";
 import { CartCountBadge } from "./CartCountBadge";
 import { HeaderNav, HeaderNavLinks } from "./HeaderNav";
@@ -30,7 +30,7 @@ export function ShopHeader() {
           </Link>
           <AccountEntry variant="header" />
           <Button asChild variant="secondary" size="sm">
-            <Link href="/admin">관리자 페이지</Link>
+            <Link href="/admin/products">관리자 페이지</Link>
           </Button>
         </div>
       </div>

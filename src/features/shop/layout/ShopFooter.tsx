@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandLogo } from "./BrandLogo";
+import { BrandLogo } from "@/shared/ui/BrandLogo";
 import { CATEGORY_LINKS, CUSTOMER_CARE, SHOP_INFO } from "./nav";
 
 /** 푸터 (Figma: Footer · MobileFooter) — 데스크톱 4단, 모바일 1단 */

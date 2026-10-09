@@ -20,7 +20,9 @@ const LEFT: Tab[] = [
     match: (p) => p.startsWith("/cart") || p.startsWith("/checkout"),
   },
 ];
-const RIGHT: Tab[] = [{ href: "/admin", label: "관리자", icon: Lock, match: (p) => p.startsWith("/admin") }];
+const RIGHT: Tab[] = [
+  { href: "/admin/products", label: "관리자", icon: Lock, match: (p) => p.startsWith("/admin") },
+];
 
 /*
  * usePathname은 동적 라우트에서 <Suspense> 안에 있어야 한다 (Cache Components).
