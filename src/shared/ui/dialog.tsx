@@ -108,7 +108,7 @@ function DialogTitle({ className, ...props }: React.ComponentProps<typeof Dialog
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("text-lg leading-none font-semibold", className)}
+      className={cn("type-h3 text-heading", className)} // shadcn 기본(text-lg · font-semibold)이 텍스트 스타일을 덮어써서 디자인 토큰으로 바꿈
       {...props}
     />
   );

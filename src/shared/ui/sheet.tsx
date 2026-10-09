@@ -89,7 +89,7 @@ function SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPr
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("font-semibold text-foreground", className)}
+      className={cn("type-h3 text-heading", className)} // shadcn 기본 font-semibold가 텍스트 스타일 굵기를 덮어써서 바꿈
       {...props}
     />
   );

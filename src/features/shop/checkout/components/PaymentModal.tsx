@@ -110,7 +110,7 @@ function PaymentBody({
       }}
     >
       <div className="flex items-center justify-between">
-        <Title className="type-h3 text-2xl leading-[1.35] font-medium text-heading">{title}</Title>
+        <Title className="type-h3 text-heading">{title}</Title>
         <button
           type="button"
           aria-label="결제창 닫기"
