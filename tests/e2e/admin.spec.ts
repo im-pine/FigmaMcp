@@ -2,7 +2,7 @@ import { expect, test } from "./fixtures";
 
 const PASSWORD = process.env.ADMIN_PASSWORD ?? "";
 
-// #test/필수 #test/핵심흐름 #test/E2E · #test/필수 #test/권한
+// #test/필수 #test/핵심흐름 #test/E2E · #test/필수 #test/권한 #test/E2E
 test("관리자: 주문 2건을 골라 상태를 일괄 변경한다 — 틀린 비밀번호는 막히고, 맞으면 반영된다", async ({
   page,
 }) => {

@@ -60,6 +60,24 @@ describe("관리자 상품 변경 — 비밀번호", () => {
     expect(await createProduct("", input)).toEqual({ ok: false, error: "password" });
     expect(await db.product.count()).toBe(2);
   });
+
+  test("비밀번호 자리에 문자열이 아닌 값(숫자 · 객체)이 오면 등록 · 수정 · 삭제 모두 거부하고 DB는 그대로다", async () => {
+    for (const bad of [1234, { password: PASSWORD }, null] as unknown[]) {
+      expect(await createProduct(bad as string, input)).toEqual({ ok: false, error: "password" });
+      expect(
+        await updateProduct(bad as string, { id: products.croissant.id, data: { ...input, name: "바뀜" } }),
+      ).toEqual({ ok: false, error: "password" });
+      expect(await deleteProduct(bad as string, { id: products.campagne.id })).toEqual({
+        ok: false,
+        error: "password",
+      });
+    }
+    expect(await db.product.count()).toBe(2);
+    expect((await db.product.findUniqueOrThrow({ where: { id: products.croissant.id } })).name).toBe(
+      "버터 크루아상",
+    );
+    expect(updateTag).not.toHaveBeenCalled();
+  });
 });
 
 // #test/필수 #test/입력검증 #test/통합
@@ -125,6 +143,14 @@ describe("관리자 상품 등록 · 수정 · 삭제", () => {
     const item = await db.orderItem.findFirstOrThrow({ where: { orderId: order.id } });
     expect(item.productId).toBeNull();
     expect(item.productName).toBe("캄파뉴");
+  });
+
+  test("같은 상품을 두 번 삭제하면 두 번째는 not-found를 돌려준다", async () => {
+    expect(await deleteProduct(PASSWORD, { id: products.campagne.id })).toEqual({ ok: true });
+    expect(await deleteProduct(PASSWORD, { id: products.campagne.id })).toMatchObject({
+      ok: false,
+      error: "not-found",
+    });
   });
 
   test("없는 상품을 수정 · 삭제하면 not-found를 돌려준다", async () => {
