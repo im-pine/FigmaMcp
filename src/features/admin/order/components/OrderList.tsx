@@ -7,7 +7,7 @@ import { useState } from "react";
 import type { OrderStatus } from "@/generated/prisma/enums";
 import { Checkbox } from "@/features/admin/common/Checkbox";
 import { PasswordConfirm } from "@/features/admin/common/PasswordConfirm";
-import { StatusBadge } from "@/features/admin/common/StatusBadge";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { BottomSheet } from "@/features/admin/common/BottomSheet";
 import type { AdminOrderRow } from "@/server/services/order/admin";
 import { ORDER_STATUS_LABEL, formatOrderDate } from "@/shared/constants/order";

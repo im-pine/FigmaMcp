@@ -4,9 +4,9 @@ import { ArrowLeft } from "lucide-react";
 import { getAccessibleOrder } from "@/server/services/order/lookup";
 import { isMemberLoggedIn } from "@/server/auth/member-session";
 import { formatPrice } from "@/shared/lib/format";
-import { Badge } from "@/shared/ui/badge";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { Button } from "@/shared/ui/button";
-import { formatOrderDate, ORDER_STATUS_LABEL, PAYMENT_METHOD_LABEL } from "../labels";
+import { formatOrderDate, PAYMENT_METHOD_LABEL } from "../labels";
 import { OrderItemRow } from "./OrderItemRow";
 import { OrderProgress } from "./OrderProgress";
 
@@ -36,7 +36,7 @@ export function OrderDetail({ params }: { params: Params }) {
           <div className="flex items-center gap-4">
             <h1 className="type-h2 text-heading lg:type-h1 lg:text-[44px]">주문 상세</h1>
             <Suspense>
-              <StatusBadge params={params} />
+              <OrderStatus params={params} />
             </Suspense>
           </div>
           <Suspense fallback={<div aria-hidden className="h-10 lg:h-6" />}>
@@ -70,9 +70,9 @@ async function BackLink() {
   );
 }
 
-async function StatusBadge({ params }: { params: Params }) {
+async function OrderStatus({ params }: { params: Params }) {
   const order = await loadOrder(params);
-  return order ? <Badge>{ORDER_STATUS_LABEL[order.status]}</Badge> : null;
+  return order ? <StatusBadge status={order.status} /> : null;
 }
 
 async function OrderMeta({ params }: { params: Params }) {

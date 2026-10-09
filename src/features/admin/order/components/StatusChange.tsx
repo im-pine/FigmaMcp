@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { OrderStatus } from "@/generated/prisma/enums";
 import { BottomSheet } from "@/features/admin/common/BottomSheet";
 import { PasswordConfirm } from "@/features/admin/common/PasswordConfirm";
-import { StatusBadge } from "@/features/admin/common/StatusBadge";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,

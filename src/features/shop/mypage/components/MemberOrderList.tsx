@@ -5,6 +5,7 @@ import { isMemberLoggedIn } from "@/server/auth/member-session";
 import type { OrderStatus } from "@/generated/prisma/enums";
 import { DEMO_MEMBER_NAME, getDemoMemberOrders } from "@/server/services/order/member";
 import { formatPrice } from "@/shared/lib/format";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { openMemberOrder } from "../actions";
 import { ORDER_STATUS_LABEL, formatOrderDay } from "../labels";
 import { OrderStatusFilter } from "./OrderStatusFilter";
@@ -86,9 +87,7 @@ async function OrdersBody({ searchParams }: { searchParams: SearchParams }) {
                     <time dateTime={o.createdAt.toISOString()} className="type-body-sm text-caption">
                       {formatOrderDay(o.createdAt)}
                     </time>
-                    <span className="rounded-pill bg-badge px-2.5 py-1 text-xs font-medium text-on-badge">
-                      {ORDER_STATUS_LABEL[o.status]}
-                    </span>
+                    <StatusBadge status={o.status} />
                   </div>
                   <h2 className="mt-3 type-title text-heading">
                     {first?.productName}

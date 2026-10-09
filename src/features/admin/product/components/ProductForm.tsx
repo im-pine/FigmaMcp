@@ -261,10 +261,7 @@ function ProductFields({
       <div className={row}>
         <Field id={fid("category")} label="카테고리" error={errors.category?.[0]}>
           <Select value={values.category} onValueChange={(v) => set("category", v as Category)}>
-            <SelectTrigger
-              id={fid("category")}
-              className={FIELD_CLASS}
-            >
+            <SelectTrigger id={fid("category")} className={FIELD_CLASS}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent position="popper" className="rounded-input border-line bg-card">
