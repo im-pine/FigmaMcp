@@ -6,7 +6,8 @@
  * - 스케일: bg-brown-100, text-primary-700 …
  * - 시맨틱: bg-page · bg-card · bg-section · bg-inverse, text-heading · text-body · text-caption · text-link,
  *          bg-action · hover:bg-action-hover, border-line · border-line-strong, bg-badge · text-on-badge,
- *          bg-category-{all,bread,cake,cookie,beverage}
+ *          bg-category-{all,bread,cake,cookie,beverage},
+ *          bg-status-{received,preparing,shipping,delivered} · text-on-status-*, border-status-canceled
  * - shadcn 변수(--primary, --background …)도 같은 토큰을 가리켜, shadcn 컴포넌트가 디자인을 따르게 한다.
  */
 @theme inline {
@@ -85,6 +86,16 @@
   --color-category-cake: var(--category-cake);
   --color-category-cookie: var(--category-cookie);
   --color-category-beverage: var(--category-beverage);
+  --color-status-received: var(--status-received-bg);
+  --color-on-status-received: var(--status-received-text);
+  --color-status-preparing: var(--status-preparing-bg);
+  --color-on-status-preparing: var(--status-preparing-text);
+  --color-status-shipping: var(--status-shipping-bg);
+  --color-on-status-shipping: var(--status-shipping-text);
+  --color-status-delivered: var(--status-delivered-bg);
+  --color-on-status-delivered: var(--status-delivered-text);
+  --color-status-canceled: var(--status-canceled-border);
+  --color-on-status-canceled: var(--status-canceled-text);
 
   /* shadcn */
   --color-background: var(--bg-page);
