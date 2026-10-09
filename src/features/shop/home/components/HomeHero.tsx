@@ -28,6 +28,11 @@ export function HomeHero() {
           className="absolute inset-0 size-full object-cover"
         />
       </picture>
+      {/* 글자 대비용 그라데이션: 글자 쪽만 어둡게(모바일 위 → 아래, 데스크톱 왼쪽 → 오른쪽), 빵 사진 쪽은 그대로 */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-linear-to-b from-inverse/85 via-inverse/72 via-60% to-transparent to-90% lg:bg-linear-to-r lg:from-inverse/75 lg:via-inverse/35 lg:via-45% lg:to-transparent lg:to-70%"
+      />
 
       <div className="relative mx-auto flex h-full max-w-[1440px] flex-col items-start px-5 pt-10 lg:justify-center lg:px-20 lg:pt-0">
         <p className="type-label text-on-inverse">Freshly baked every morning</p>

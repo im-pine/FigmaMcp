@@ -22,18 +22,20 @@ Figma MCP를 이용해 Figma에 웹 디자인을 자동으로 만들고, 그 디
 
 ## ⏱ 시간 측정
 
-| 순서 | 단계 | 범위 | 실제 소요 시간 |
-| --- | --- | --- | --- |
-| 1 | 프로젝트 설계 | README 작성, 기능 범위 정의, 기술 스택 및 데이터 구조 결정 | 1시간 10분 |
-| 2 | 레퍼런스 조사 | 레퍼런스 디자인 조사, 디자인 방향 결정 | 44분 |
-| 3 | 쇼핑몰 디자인 | Figma MCP로 사용자 페이지 디자인 (데스크톱 · 모바일, 이미지 생성 포함) | 2시간 |
-| 4 | 쇼핑몰 개발 | 사용자 페이지 구현 | 2시간 28분 |
-| 5 | 관리자 디자인 | Figma MCP로 관리자 페이지 디자인 (데스크톱 · 모바일) | 1시간 |
-| 6 | 관리자 개발 | 관리자 페이지 구현 | |
-| 7 | 마무리 | 테스트 코드 작성, 점검 | |
-| | **합계** | **목표: 8시간 이내** | 7시간 22분 (진행 중) |
+| 순서 | 단계 | 범위 | 소요 시간 | 합계 반영 | 비고 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 프로젝트 설계 | 기능 범위 · 기술 스택 결정 | 1시간 10분 | 1시간 10분 |  |
+| 2 | 레퍼런스 조사 | 디자인 방향 결정 | 44분 | 44분 |  |
+| 3 | 쇼핑몰 디자인 | 사용자 페이지 Figma 디자인 | 2시간 | 2시간 |  |
+| 4 | 쇼핑몰 개발 | 사용자 페이지 구현 | 2시간 28분 | 2시간 28분 |  |
+| 5 | 관리자 디자인 | 관리자 페이지 Figma 디자인 | 1시간 | **0분** | 개발과 병행 |
+| 6 | 관리자 개발 | 관리자 페이지 구현 | 48분 | **0분** | 마무리와 병행 |
+| 7 | 마무리 | 디자인 디테일 · UX 점검 · 테스트 | 1시간 18분 | 1시간 18분 |  |
+|  | **합계** | **목표: 8시간 이내** | 9시간 28분 | **7시간 40분** | 병행 **−1시간 48분** |
 
 macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며, 휴식과 일시정지 구간은 제외합니다.
+관리자 디자인 · 개발은 다른 세션과 동시에 진행해 Claude Code 대화 기록의 메시지 시각으로 계산했습니다 (10분 이상 공백 제외).
+
 측정 방식과 단계별 회고는 [Wiki — Time](https://github.com/im-pine/FigmaMcp/wiki/Project%E2%80%90Time)에 정리했습니다.
 
 ---
@@ -91,18 +93,19 @@ macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며
 | ORM | Prisma | DB 스키마에서 생성된 타입을 애플리케이션 타입으로 그대로 사용 |
 | Validation | Zod | Prisma 스키마에서 자동 생성한 Zod 스키마로 서버 입력값 검증 |
 | Database | PostgreSQL | Prisma 최신 아키텍처(Prisma 8)가 우선 지원하는 DB |
-| Server State | TanStack Query | 상품 · 주문 데이터의 캐싱과 변경 후 동기화 |
+| Server State | Next.js 서버 캐시 (`use cache`) | 상품 · 주문 조회를 서버에서 캐시하고, 변경한 Server Action에서 `updateTag`로 갱신 |
 | Client State | Zustand | 장바구니 같은 단순한 전역 상태를 store 하나로 관리 |
 | Styling | Tailwind CSS | 디자인 토큰을 utility로 바로 옮겨 빠르게 반영 |
 | UI Components | shadcn/ui | Tailwind 구조를 유지하면서 반복 UI 구현 시간 단축 |
-| Testing | Jest | 마무리 단계의 테스트 코드 작성 |
+| Unit · Integration Test | Jest + Testing Library | 계산 · 검증 · 권한 로직과 컴포넌트를 사용자 행동 기준으로 테스트 (Next.js 공식 설정) |
+| E2E Test | Playwright | 구매 → 주문조회 핵심 흐름을 실제 브라우저(데스크톱 · 모바일)로 확인 (Next.js 공식 가이드) |
 
 ## 🧠 핵심 설계
 
-- **Server Component 조회 + Server Action 변경** — Route Handler 없이 서버 로직을 처리하고, DB 로직은 `lib/services`로 분리 → [Architecture](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Architecture)
+- **Server Component 조회 + Server Action 변경** — Route Handler 없이 서버 로직을 처리하고, DB 로직은 `server/services`로 분리 → [Architecture](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Architecture)
 - **Prisma 스키마를 타입의 단일 기준으로** — 프론트엔드 interface를 따로 만들지 않고 Prisma 생성 타입과 자동 생성 Zod 스키마 사용 → [Data](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Data)
 - **인증 없는 공개 관리자 페이지 보호** — 변경은 서버에서 비밀번호 확인, 개인정보는 서버에서 마스킹 → [Architecture](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Architecture)
-- **서버 상태와 클라이언트 상태 분리** — 상품 · 주문은 TanStack Query, 장바구니는 Zustand + persist → [State](https://github.com/im-pine/FigmaMcp/wiki/FrontEnd%E2%80%90State)
+- **서버 상태와 클라이언트 상태 분리** — 상품 · 주문은 서버 캐시(`use cache` + `updateTag`), 장바구니는 Zustand + persist → [State](https://github.com/im-pine/FigmaMcp/wiki/FrontEnd%E2%80%90State)
 
 ---
 
@@ -141,6 +144,25 @@ pnpm dev            # http://localhost:3000  (디자인 시스템 미리보기: 
 | `pnpm typecheck` | 라우트 타입 생성 + TypeScript 검사 |
 | `pnpm format` | Prettier |
 | `pnpm db:studio` | Prisma Studio |
+
+### Testing
+
+```bash
+cp .env.test.example .env.test   # 테스트 전용 DB(figmamcp_test) — 통합 · E2E가 비우고 다시 채움
+pnpm test                         # 단위 · 컴포넌트 (DB 없음)
+pnpm test:integration             # 서버 로직 + 테스트 DB
+pnpm test:e2e                     # 프로덕션 빌드를 3800 포트에 띄워 브라우저로 확인
+```
+
+| 도구 | 쓰는 곳 | 고른 이유 |
+| --- | --- | --- |
+| Jest 30 | 단위 · 통합 테스트 실행 | Next.js 공식 설정(`next/jest`) 지원, 주간 다운로드 5천만+ · 2026-09 릴리스 |
+| Testing Library (react · dom · jest-dom · user-event) | 컴포넌트 · store 테스트 | 내부 구현이 아니라 사용자가 보는 화면 · 클릭 기준으로 테스트. user-event는 실제 입력 순서를 흉내 냄 |
+| jest-environment-jsdom | 컴포넌트 테스트 환경 | 브라우저 없이 DOM을 실행 (Next.js 문서 권장) |
+| Playwright 1.63 | E2E | 실제 브라우저 · 모바일 화면 에뮬레이션 내장, 서버 자동 실행(`webServer`). 주간 다운로드 8천만+ · 2026-09 릴리스 |
+
+- 비동기 Server Component는 Jest가 지원하지 않아(Next.js 문서) 화면 흐름은 E2E로 확인합니다.
+- 테스트 항목 선정 기준과 구성은 [Wiki — Testing](https://github.com/im-pine/FigmaMcp/wiki/Project%E2%80%90Testing)에 정리했습니다. PR마다 GitHub Actions에서 자동으로 실행됩니다.
 
 폴더 구조와 개발 규칙은 [`CLAUDE.md`](./CLAUDE.md)를 참고하세요.
 

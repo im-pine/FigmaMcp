@@ -16,6 +16,7 @@ import { summarizeCart, useCartHydrated, useCartStore } from "@/features/shop/ca
 import { placeOrder, quoteOrder } from "../actions";
 import { PAYMENT_METHODS } from "../payment-methods";
 import { parseCheckout, type CheckoutErrors, type CheckoutField, type CheckoutInput } from "../schema";
+import { useLeaveConfirm } from "../hooks/use-leave-confirm";
 import { PaymentModal } from "./PaymentModal";
 
 const FORM_ID = "checkout-form";
@@ -63,6 +64,8 @@ function CheckoutForm({ onPlaced }: { onPlaced: (orderNo: string) => void }) {
   const [quote, setQuote] = useState(0);
   const [payError, setPayError] = useState<string>();
   const [pending, startTransition] = useTransition();
+
+  useLeaveConfirm("주문서에서 나갈까요? 입력한 주문 정보는 저장되지 않아요.");
 
   /** 주문서 확인 → 통과하면 결제창을 연다 */
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -129,25 +132,54 @@ function CheckoutForm({ onPlaced }: { onPlaced: (orderNo: string) => void }) {
         <fieldset className="flex flex-col gap-5">
           <legend className="mb-5 type-h3 text-heading">주문자 정보</legend>
           <div className="grid gap-5 lg:grid-cols-2 lg:gap-4">
-            {field("ordererName", "이름", { placeholder: "홍길동" })}
-            {field("ordererPhone", "연락처", { type: "tel", inputMode: "tel", placeholder: "010-0000-0000" })}
+            {field("ordererName", "이름", {
+              placeholder: "홍길동",
+              autoComplete: "name",
+              "aria-required": true,
+            })}
+            {field("ordererPhone", "연락처", {
+              type: "tel",
+              inputMode: "tel",
+              placeholder: "010-0000-0000",
+              autoComplete: "tel",
+              "aria-required": true,
+            })}
           </div>
-          {field("ordererEmail", "이메일", { type: "email", placeholder: "example@email.com" })}
+          {field("ordererEmail", "이메일", {
+            type: "email",
+            placeholder: "example@email.com",
+            autoComplete: "email",
+            "aria-required": true,
+          })}
         </fieldset>
 
         <fieldset className="flex flex-col gap-5">
           <legend className="mb-5 type-h3 text-heading">배송 정보</legend>
           <div className="grid gap-5 lg:grid-cols-2 lg:gap-4">
-            {field("recipientName", "받는 분", { placeholder: "홍길동" })}
+            {field("recipientName", "받는 분", {
+              placeholder: "홍길동",
+              autoComplete: "shipping name",
+              "aria-required": true,
+            })}
             {field("recipientPhone", "연락처", {
               type: "tel",
               inputMode: "tel",
               placeholder: "010-0000-0000",
+              autoComplete: "shipping tel",
+              "aria-required": true,
             })}
           </div>
-          {field("address", "주소", { placeholder: "도로명 주소 검색" })}
-          {field("addressDetail", "상세 주소", { placeholder: "상세 주소를 입력하세요" })}
-          {field("requestNote", "배송 요청사항", { placeholder: "문 앞에 놓아주세요" })}
+          {field("address", "주소", {
+            placeholder: "도로명 주소 검색",
+            autoComplete: "shipping address-line1",
+            "aria-required": true,
+          })}
+          {field("addressDetail", "상세 주소", {
+            placeholder: "상세 주소를 입력하세요",
+            autoComplete: "shipping address-line2",
+            "aria-required": true,
+          })}
+          {field("requestNote", "배송 요청사항 (선택)", { placeholder: "문 앞에 놓아주세요" })}
         </fieldset>
 
         <fieldset>
@@ -192,6 +224,7 @@ function CheckoutForm({ onPlaced }: { onPlaced: (orderNo: string) => void }) {
       <PaymentModal
         open={payload !== null}
         onOpenChange={(open) => !open && setPayload(null)}
+        returnFocus={() => document.querySelector<HTMLElement>(`button[form="${FORM_ID}"]`)}
         method={method}
         amount={quote}
         priceChanged={quote !== total}

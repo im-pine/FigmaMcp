@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Suspense, useState } from "react";
-import { LayoutGrid, Lock, Search, ShoppingBag, User, X, type LucideIcon } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
+import { LayoutGrid, Lock, Search, ShoppingBag, X, type LucideIcon } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CartCountBadge } from "./CartCountBadge";
 import { ProductsBubbleMenu } from "./ProductsBubbleMenu";
@@ -21,28 +21,36 @@ const LEFT: Tab[] = [
   },
 ];
 const RIGHT: Tab[] = [
-  { href: "/mypage", label: "마이페이지", icon: User, match: (p) => p.startsWith("/mypage") },
-  { href: "/admin", label: "관리자", icon: Lock, match: (p) => p.startsWith("/admin") },
+  { href: "/admin/products", label: "관리자", icon: Lock, match: (p) => p.startsWith("/admin") },
 ];
 
 /*
  * usePathname은 동적 라우트에서 <Suspense> 안에 있어야 한다 (Cache Components).
  * fallback은 활성 탭 없이 같은 바를 그려, 바가 늦게 나타나지 않게 한다.
  */
-export function BottomTabBar() {
+/** account: 마이페이지 탭 자리 (로그인 상태에 따라 링크 · 드롭 메뉴 — 서버에서 넘겨받는다) */
+export function BottomTabBar({ account }: { account: React.ReactNode }) {
   return (
-    <Suspense fallback={<BottomTabBarView pathname="" />}>
-      <BottomTabBarWithPath />
+    <Suspense fallback={<BottomTabBarView pathname="" account={account} />}>
+      <BottomTabBarWithPath account={account} />
     </Suspense>
   );
 }
 
-function BottomTabBarWithPath() {
-  return <BottomTabBarView pathname={usePathname()} />;
+function BottomTabBarWithPath({ account }: { account: React.ReactNode }) {
+  return <BottomTabBarView pathname={usePathname()} account={account} />;
 }
 
-function BottomTabBarView({ pathname }: { pathname: string }) {
+function BottomTabBarView({ pathname, account }: { pathname: string; account: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+
+  // 버블 메뉴가 열려 있으면 ESC로 닫는다
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   return (
     <>
@@ -72,6 +80,7 @@ function BottomTabBarView({ pathname }: { pathname: string }) {
               상품
             </span>
           </li>
+          <li className="flex flex-1 justify-center">{account}</li>
           {RIGHT.map((t) => (
             <TabLink key={t.href} tab={t} active={t.match(pathname)} />
           ))}
@@ -88,7 +97,10 @@ function TabLink({ tab, active }: { tab: Tab; active: boolean }) {
       <Link
         href={tab.href}
         aria-current={active ? "page" : undefined}
-        className={cn("flex flex-col items-center gap-1", active ? "text-link" : "text-caption")}
+        className={cn(
+          "flex min-h-11 w-full flex-col items-center gap-1",
+          active ? "text-link" : "text-caption",
+        )}
       >
         <span className="relative">
           <Icon className="size-6" strokeWidth={1.5} />

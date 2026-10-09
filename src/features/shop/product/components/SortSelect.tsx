@@ -1,5 +1,6 @@
 "use client";
 
+import { startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Check } from "lucide-react";
 import {
@@ -25,7 +26,7 @@ export function SortSelect({ value }: { value: SortValue }) {
     if (next === "popular") params.delete("sort");
     else params.set("sort", next);
     const query = params.toString();
-    router.push(query ? `/products?${query}` : "/products", { scroll: false });
+    startTransition(() => router.push(query ? `/products?${query}` : "/products", { scroll: false }));
   };
 
   return (

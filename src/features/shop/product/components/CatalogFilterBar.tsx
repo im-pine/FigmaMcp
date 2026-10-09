@@ -1,5 +1,6 @@
 "use client";
 
+import { startTransition } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { CATEGORIES } from "@/shared/constants/catalog";
@@ -27,7 +28,8 @@ function catalogHref(category?: string, q?: string, sort?: string) {
 
 export function CatalogFilterBar({ category, q, sort }: { category?: string; q?: string; sort?: string }) {
   const router = useRouter();
-  const go = (href: string) => router.push(href, { scroll: false });
+  // transition으로 이동해 새 목록이 준비될 때까지 이전 목록을 유지한다 (스켈레톤으로 바뀌며 스크롤이 튀지 않게)
+  const go = (href: string) => startTransition(() => router.push(href, { scroll: false }));
 
   return (
     <div className="-mx-5 flex [scrollbar-width:none] items-center gap-2 overflow-x-auto px-5 lg:mx-0 lg:gap-3 lg:px-0">
@@ -39,7 +41,7 @@ export function CatalogFilterBar({ category, q, sort }: { category?: string; q?:
               type="button"
               aria-label={`검색어 '${q}' 지우기`}
               onClick={() => go(catalogHref(category, undefined, sort))}
-              className="rounded-full p-0.5 hover:bg-primary-300"
+              className="relative rounded-full p-0.5 before:absolute before:top-1/2 before:left-1/2 before:size-11 before:-translate-1/2 before:content-[''] hover:bg-primary-300"
             >
               <X className="size-4" />
             </button>
