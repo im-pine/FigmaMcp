@@ -1,5 +1,5 @@
 import "server-only";
-import type { Prisma, Product } from "@/generated/prisma/client";
+import { Prisma, type Product } from "@/generated/prisma/client";
 import { db } from "@/server/db";
 
 /*
@@ -29,20 +29,41 @@ async function uniqueSlug(nameEn: string): Promise<string> {
   return `${base}-${n}`;
 }
 
+const MAX_SLUG_RETRY = 3;
+
+/** Prisma 오류 코드 확인 (P2002: unique 충돌, P2025: 대상 없음) */
+const isPrismaError = (error: unknown, code: string) =>
+  error instanceof Prisma.PrismaClientKnownRequestError && error.code === code;
+
+/** 등록. 같은 영문 이름으로 동시에 등록돼 slug가 겹치면(unique 충돌) slug를 다시 만들어 몇 번 더 시도한다 */
 export async function createProduct(data: ProductData): Promise<Product> {
-  return db.product.create({ data: { ...data, slug: await uniqueSlug(data.nameEn) } });
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await db.product.create({ data: { ...data, slug: await uniqueSlug(data.nameEn) } });
+    } catch (error) {
+      if (!isPrismaError(error, "P2002") || attempt >= MAX_SLUG_RETRY) throw error;
+    }
+  }
 }
 
 /** 수정. 없으면 null. slug는 바꾸지 않는다 (쇼핑몰 주소 유지) */
 export async function updateProduct(id: number, data: ProductData): Promise<Product | null> {
-  const found = await db.product.findUnique({ where: { id }, select: { id: true } });
-  if (!found) return null;
-  return db.product.update({ where: { id }, data });
+  // 확인과 수정 사이에 다른 관리자가 지웠을 수 있으므로 "대상 없음"(P2025)도 null로 돌려준다
+  try {
+    return await db.product.update({ where: { id }, data });
+  } catch (error) {
+    if (isPrismaError(error, "P2025")) return null;
+    throw error;
+  }
 }
 
 /** 삭제. 없으면 null. 주문 상품(OrderItem)은 productId만 비워지고 주문 기록은 남는다 */
 export async function deleteProduct(id: number): Promise<Product | null> {
-  const found = await db.product.findUnique({ where: { id }, select: { id: true } });
-  if (!found) return null;
-  return db.product.delete({ where: { id } });
+  // 동시에 두 번 지우면 두 번째는 "대상 없음"(P2025) → 이미 삭제된 상품으로 안내한다
+  try {
+    return await db.product.delete({ where: { id } });
+  } catch (error) {
+    if (isPrismaError(error, "P2025")) return null;
+    throw error;
+  }
 }

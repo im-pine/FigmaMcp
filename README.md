@@ -93,7 +93,7 @@ macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며
 | ORM | Prisma | DB 스키마에서 생성된 타입을 애플리케이션 타입으로 그대로 사용 |
 | Validation | Zod | Prisma 스키마에서 자동 생성한 Zod 스키마로 서버 입력값 검증 |
 | Database | PostgreSQL | Prisma 최신 아키텍처(Prisma 8)가 우선 지원하는 DB |
-| Server State | TanStack Query | 상품 · 주문 데이터의 캐싱과 변경 후 동기화 |
+| Server State | Next.js 서버 캐시 (`use cache`) | 상품 · 주문 조회를 서버에서 캐시하고, 변경한 Server Action에서 `updateTag`로 갱신 |
 | Client State | Zustand | 장바구니 같은 단순한 전역 상태를 store 하나로 관리 |
 | Styling | Tailwind CSS | 디자인 토큰을 utility로 바로 옮겨 빠르게 반영 |
 | UI Components | shadcn/ui | Tailwind 구조를 유지하면서 반복 UI 구현 시간 단축 |
@@ -102,10 +102,10 @@ macOS 타이머 앱 [Session](https://www.stayinsession.com/)으로 측정하며
 
 ## 🧠 핵심 설계
 
-- **Server Component 조회 + Server Action 변경** — Route Handler 없이 서버 로직을 처리하고, DB 로직은 `lib/services`로 분리 → [Architecture](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Architecture)
+- **Server Component 조회 + Server Action 변경** — Route Handler 없이 서버 로직을 처리하고, DB 로직은 `server/services`로 분리 → [Architecture](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Architecture)
 - **Prisma 스키마를 타입의 단일 기준으로** — 프론트엔드 interface를 따로 만들지 않고 Prisma 생성 타입과 자동 생성 Zod 스키마 사용 → [Data](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Data)
 - **인증 없는 공개 관리자 페이지 보호** — 변경은 서버에서 비밀번호 확인, 개인정보는 서버에서 마스킹 → [Architecture](https://github.com/im-pine/FigmaMcp/wiki/BackEnd%E2%80%90Architecture)
-- **서버 상태와 클라이언트 상태 분리** — 상품 · 주문은 TanStack Query, 장바구니는 Zustand + persist → [State](https://github.com/im-pine/FigmaMcp/wiki/FrontEnd%E2%80%90State)
+- **서버 상태와 클라이언트 상태 분리** — 상품 · 주문은 서버 캐시(`use cache` + `updateTag`), 장바구니는 Zustand + persist → [State](https://github.com/im-pine/FigmaMcp/wiki/FrontEnd%E2%80%90State)
 
 ---
 

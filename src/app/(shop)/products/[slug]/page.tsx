@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ProductDetail, ProductDetailSkeleton } from "@/features/shop/product/components/ProductDetail";
@@ -8,11 +7,6 @@ import { getProductBySlug, getProducts } from "@/server/services/product";
 export async function generateStaticParams() {
   const products = await getProducts();
   return products.map((p) => ({ slug: p.slug }));
-}
-
-export async function generateMetadata({ params }: PageProps<"/products/[slug]">): Promise<Metadata> {
-  const product = await getProductBySlug((await params).slug);
-  return { title: product ? `${product.name} | Pine Bakery` : "Pine Bakery" };
 }
 
 /** params(URL 값)는 <Suspense> 안에서 읽어 공유 App Shell이 특정 상품에 묶이지 않게 한다. */

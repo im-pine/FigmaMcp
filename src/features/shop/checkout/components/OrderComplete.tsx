@@ -9,11 +9,7 @@ export async function OrderComplete({ orderNo }: { orderNo: string | undefined }
   const order = orderNo ? await getOrderCompletion(orderNo) : null;
 
   if (!order) {
-    return (
-      <Shell label="ORDER" title="주문을 찾을 수 없어요" message="주문번호를 다시 확인해 주세요.">
-        <Actions />
-      </Shell>
-    );
+    return <Shell label="ORDER" title="주문을 찾을 수 없어요" message="주문번호를 다시 확인해 주세요." />;
   }
 
   const [first, ...rest] = order.items;
@@ -35,7 +31,6 @@ export async function OrderComplete({ orderNo }: { orderNo: string | undefined }
         <Row label="주문 상품" value={itemSummary} />
         <Row label="결제 금액" value={formatPrice(order.total)} />
       </dl>
-      <Actions />
     </Shell>
   );
 }
@@ -51,10 +46,10 @@ function Shell({
   title: string;
   message: string;
   icon?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
-    <section className="mx-auto flex max-w-[1440px] flex-col items-center px-5 pt-14 pb-16 text-center lg:px-20 lg:pt-30 lg:pb-40">
+    <>
       {icon && (
         <span className="mb-5 flex size-14 items-center justify-center rounded-full bg-badge text-on-badge lg:mb-7 lg:size-20">
           <Check className="size-6 lg:size-8" strokeWidth={1.5} />
@@ -64,7 +59,7 @@ function Shell({
       <h1 className="mt-3 type-h2 text-heading lg:mt-5 lg:type-h1">{title}</h1>
       <p className="mt-3 type-body-md text-body lg:mt-4 lg:type-body-lg">{message}</p>
       {children}
-    </section>
+    </>
   );
 }
 
@@ -77,7 +72,8 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Actions() {
+/** 아래 버튼 — 데이터와 상관없는 고정 영역이라 페이지에서 Suspense 바깥에 둔다 */
+export function OrderCompleteActions() {
   return (
     <div className="mt-6 flex w-full flex-col gap-3 lg:mt-10 lg:w-auto lg:flex-row">
       <Button asChild>
@@ -92,13 +88,10 @@ function Actions() {
 
 export function OrderCompleteSkeleton() {
   return (
-    <section
-      aria-busy="true"
-      className="mx-auto flex max-w-[1440px] flex-col items-center px-5 pt-14 pb-16 lg:pt-30 lg:pb-40"
-    >
+    <div aria-busy="true" className="flex w-full flex-col items-center">
       <div className="size-14 animate-pulse rounded-full bg-section lg:size-20" />
       <div className="mt-6 h-10 w-64 animate-pulse rounded bg-section" />
       <div className="mt-10 h-40 w-full max-w-[480px] animate-pulse rounded-card bg-card" />
-    </section>
+    </div>
   );
 }

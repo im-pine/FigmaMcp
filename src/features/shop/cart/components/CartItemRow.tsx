@@ -25,7 +25,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
       type="button"
       aria-label={`${item.name} 삭제`}
       onClick={() => removeItem(item.id, item.giftWrap)}
-      className="flex size-8 shrink-0 items-center justify-center text-heading hover:text-caption"
+      className="relative flex size-8 shrink-0 items-center justify-center text-heading before:absolute before:top-1/2 before:left-1/2 before:size-11 before:-translate-1/2 before:content-[''] hover:text-caption"
     >
       <X className="size-5" strokeWidth={1.5} />
     </button>

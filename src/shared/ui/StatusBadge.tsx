@@ -2,7 +2,7 @@ import type { OrderStatus } from "@/generated/prisma/enums";
 import { ORDER_STATUS_LABEL } from "@/shared/constants/order";
 import { cn } from "@/shared/lib/utils";
 
-/** Figma: StatusBadge — 주문 상태별 색. 취소는 진행 단계 밖이라 배경 없이 테두리만 */
+/** Figma: StatusBadge — 주문 상태별 색 (쇼핑몰 · 관리자 공용). 취소는 진행 단계 밖이라 배경 없이 테두리만 */
 const STATUS_CLASS: Record<OrderStatus, string> = {
   RECEIVED: "bg-status-received text-on-status-received",
   PREPARING: "bg-status-preparing text-on-status-preparing",

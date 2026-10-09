@@ -128,7 +128,10 @@ export async function updateOrderStatuses(orderNos: string[], status: OrderStatu
     // 판매수가 두 번 빠지거나 더해지지 않게 한다.
     const changed: typeof orders = [];
     for (const o of orders) {
-      const { count } = await tx.order.updateMany({ where: { id: o.id, status: o.status }, data: { status } });
+      const { count } = await tx.order.updateMany({
+        where: { id: o.id, status: o.status },
+        data: { status },
+      });
       if (count === 1) changed.push(o);
     }
 

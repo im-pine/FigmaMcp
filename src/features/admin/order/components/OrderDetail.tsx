@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 import type { OrderStatus } from "@/generated/prisma/enums";
-import { StatusBadge } from "@/features/admin/common/StatusBadge";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
 import type { AdminOrder } from "@/server/services/order/admin";
 import {
   ORDER_PROGRESS,

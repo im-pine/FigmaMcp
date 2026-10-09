@@ -6,14 +6,19 @@ import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { cn } from "@/shared/lib/utils";
 import { ADMIN_NAV } from "./nav";
+import { BrandLogo } from "@/shared/ui/BrandLogo";
 
 /** 데스크톱 사이드바 (Figma: AdminSidebar) — lg 이상에서만 표시 */
 export function AdminSidebar() {
   return (
     <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line bg-card px-4 py-6 lg:flex">
-      <Link href="/admin/products" className="flex flex-col gap-0.5 px-3 pb-7">
-        <span className="type-h3 text-heading">Pine Bakery</span>
-        <span className="type-label text-caption">ADMIN</span>
+      <Link
+        href="/admin/products"
+        aria-label="Pine Bakery 관리자"
+        className="flex items-center gap-2.5 px-3 pb-7"
+      >
+        <BrandLogo height={44} />
+        <span className="rounded-pill bg-section px-2 py-0.5 type-label text-caption">ADMIN</span>
       </Link>
       <p className="px-3 pb-2 type-label text-caption">메뉴</p>
       <Suspense fallback={<SidebarNav pathname="" />}>
