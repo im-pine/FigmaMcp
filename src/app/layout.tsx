@@ -5,7 +5,7 @@ import "./globals.css";
 
 // 제목 · 본문 · UI 모두 Noto Sans KR 하나 (Figma 텍스트 스타일과 동일).
 // 한글 세리프는 글자 조각이 커서 제목 몇 글자에 폰트 전송량의 65–75%를 차지해 뺐다.
-// weight를 지정하지 않으면 가변 폰트(굵기 축 하나)로 받는다 — Google이 굵기마다 같은 파일을 주므로 전송량은 같고, 600처럼 중간 굵기도 쓸 수 있다
+// weight를 지정하지 않으면 가변 폰트(굵기 축 하나)로 받는다 — Google이 굵기마다 같은 파일을 주므로 전송량은 같다
 const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans-kr",
   subsets: ["latin"],
