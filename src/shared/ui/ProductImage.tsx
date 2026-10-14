@@ -71,11 +71,6 @@ export function ProductImage({
       height={size.height}
       decoding="async"
       {...loading}
-      style={{
-        backgroundImage: `url(${entry.blur})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
       className={cn(fillClass, className)}
     />
   );
