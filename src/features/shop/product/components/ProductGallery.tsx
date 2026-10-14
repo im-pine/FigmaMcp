@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ProductImage } from "@/shared/ui/ProductImage";
 import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 
@@ -21,7 +21,7 @@ export function ProductGallery({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="relative aspect-square w-full overflow-hidden bg-section lg:rounded-card">
-        <Image
+        <ProductImage
           src={src}
           alt={alt}
           fill
@@ -43,7 +43,7 @@ export function ProductGallery({ src, alt }: { src: string; alt: string }) {
               i === active ? "border-action" : "border-transparent hover:border-line",
             )}
           >
-            <Image src={src} alt="" fill sizes="148px" className={cn("object-cover", v.className)} />
+            <ProductImage src={src} alt="" fill sizes="148px" className={cn("object-cover", v.className)} />
           </button>
         ))}
       </div>

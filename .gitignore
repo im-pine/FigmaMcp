@@ -40,3 +40,6 @@ yarn-error.log*
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# 상품 썸네일 (postinstall에서 생성: scripts/images/build-product-thumbnails.mjs)
+/public/images/products/thumbs/

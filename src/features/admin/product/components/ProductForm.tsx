@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, X } from "lucide-react";
-import Image from "next/image";
+import { ProductImage } from "@/shared/ui/ProductImage";
 import { useId, useState } from "react";
 import * as z from "zod";
 import type { Category, Product } from "@/generated/prisma/client";
@@ -231,7 +231,7 @@ function ProductFields({
                   selected && "ring-[3px] ring-action",
                 )}
               >
-                <Image src={src} alt="" fill sizes="86px" className="object-cover" />
+                <ProductImage src={src} alt="" fill sizes="86px" className="object-cover" />
                 {selected && (
                   <span
                     className={cn(

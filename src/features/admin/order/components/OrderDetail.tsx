@@ -1,5 +1,5 @@
 import { ArrowLeft, Check } from "lucide-react";
-import Image from "next/image";
+import { ProductImage } from "@/shared/ui/ProductImage";
 import Link from "next/link";
 import { Fragment } from "react";
 import type { OrderStatus } from "@/generated/prisma/enums";
@@ -231,7 +231,7 @@ function ItemsCard({
         {order.items.map((item) => (
           <li key={item.id} className="flex items-center gap-4 border-b border-line py-3 first:pt-0">
             {item.product ? (
-              <Image
+              <ProductImage
                 src={item.product.imagePath}
                 alt=""
                 width={52}

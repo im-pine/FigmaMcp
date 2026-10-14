@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ProductImage } from "@/shared/ui/ProductImage";
 import Link from "next/link";
 import type { Product } from "@/generated/prisma/client";
 import { formatPrice } from "@/shared/lib/format";
@@ -20,13 +20,12 @@ export function ProductCard({
   return (
     <Link href={`/products/${product.slug}`} className="group flex flex-col items-center text-center">
       <div className="relative aspect-square w-full overflow-hidden rounded-card bg-section">
-        <Image
+        <ProductImage
           src={product.imagePath}
           alt={product.name}
           fill
           sizes={sizes}
-          loading={highPriorityImage ? "eager" : undefined}
-          fetchPriority={highPriorityImage ? "high" : undefined}
+          priority={highPriorityImage}
           className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
         />
       </div>

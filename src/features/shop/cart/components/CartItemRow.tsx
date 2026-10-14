@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ProductImage } from "@/shared/ui/ProductImage";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { GIFT_WRAP_FEE } from "@/shared/constants/catalog";
@@ -36,7 +36,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
       {/* 데스크톱 */}
       <div className="hidden items-center gap-6 lg:flex">
         <Link href={href} className="shrink-0">
-          <Image
+          <ProductImage
             src={item.imagePath}
             alt={item.name}
             width={96}
@@ -60,7 +60,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
       {/* 모바일 */}
       <div className="flex gap-4 lg:hidden">
         <Link href={href} className="shrink-0">
-          <Image
+          <ProductImage
             src={item.imagePath}
             alt={item.name}
             width={80}
