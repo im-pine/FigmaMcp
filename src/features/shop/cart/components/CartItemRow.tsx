@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { thumbnailOf } from "@/shared/lib/product-image";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { GIFT_WRAP_FEE } from "@/shared/constants/catalog";
@@ -37,7 +38,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
       <div className="hidden items-center gap-6 lg:flex">
         <Link href={href} className="shrink-0">
           <Image
-            src={item.imagePath}
+            src={thumbnailOf(item.imagePath)}
             alt={item.name}
             width={96}
             height={96}
@@ -61,7 +62,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
       <div className="flex gap-4 lg:hidden">
         <Link href={href} className="shrink-0">
           <Image
-            src={item.imagePath}
+            src={thumbnailOf(item.imagePath)}
             alt={item.name}
             width={80}
             height={80}

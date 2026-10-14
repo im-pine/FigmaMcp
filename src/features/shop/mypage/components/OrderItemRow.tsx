@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { thumbnailOf } from "@/shared/lib/product-image";
 import { formatPrice } from "@/shared/lib/format";
 import type { AccessibleOrder } from "@/server/services/order/lookup";
 
@@ -10,7 +11,7 @@ export function OrderItemRow({ item }: { item: Item }) {
     <li className="flex items-center gap-4 border-b border-line py-2 lg:py-2">
       {item.product ? (
         <Image
-          src={item.product.imagePath}
+          src={thumbnailOf(item.product.imagePath)}
           alt=""
           width={64}
           height={64}

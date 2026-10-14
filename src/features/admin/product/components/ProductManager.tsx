@@ -2,6 +2,7 @@
 
 import { Lock, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { thumbnailOf } from "@/shared/lib/product-image";
 import { useState } from "react";
 import type { Category, Product } from "@/generated/prisma/client";
 import { BottomSheet } from "@/features/admin/common/BottomSheet";
@@ -86,7 +87,7 @@ export function ProductManager({ products, total, category, q }: Props) {
                   <td className="px-6">
                     <div className="flex items-center gap-4">
                       <Image
-                        src={p.imagePath}
+                        src={thumbnailOf(p.imagePath)}
                         alt=""
                         width={52}
                         height={52}
@@ -163,7 +164,7 @@ export function ProductManager({ products, total, category, q }: Props) {
           {products.map((p) => (
             <li key={p.id} className="flex h-20 items-center gap-3 border-b border-line">
               <Image
-                src={p.imagePath}
+                src={thumbnailOf(p.imagePath)}
                 alt=""
                 width={56}
                 height={56}
@@ -208,7 +209,7 @@ export function ProductManager({ products, total, category, q }: Props) {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-3 border-b border-line pb-4">
               <Image
-                src={sheetProduct.imagePath}
+                src={thumbnailOf(sheetProduct.imagePath)}
                 alt=""
                 width={44}
                 height={44}
