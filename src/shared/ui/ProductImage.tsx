@@ -1,4 +1,3 @@
-import { preload } from "react-dom";
 import productImages from "@/generated/product-images.json";
 import { cn } from "@/shared/lib/utils";
 
@@ -59,37 +58,25 @@ export function ProductImage({
   }
 
   const fallbackWidth = entry.widths.find((w) => w >= 384) ?? entry.widths.at(-1);
-  // <picture> 안의 이미지는 React가 자동으로 preload하지 않으므로, LCP 후보는 AVIF를 직접 미리 받는다
-  // (type을 주면 AVIF를 지원하지 않는 브라우저는 이 preload를 건너뛴다)
-  if (priority) {
-    preload(`${base}-${fallbackWidth}.avif`, {
-      as: "image",
-      type: "image/avif",
-      imageSrcSet: srcSet("avif"),
-      imageSizes: sizes,
-      fetchPriority: "high",
-    });
-  }
+  // WebP만 쓴다: AVIF는 전송량이 약 30% 작지만 해독이 느려 LCP가 늘었다 (실험: 상품 상세 모바일 LCP 2.71 → 3.69–3.74s).
+  // <picture> 없이 <img>로 두면 priority 이미지는 React가 자동으로 preload한다
   return (
-    <picture className={size.fill ? "contents" : undefined}>
-      <source type="image/avif" srcSet={srcSet("avif")} sizes={sizes} />
-      {/* 미리 만든 썸네일을 <picture>로 직접 고른다 (next/image의 요청 때 변환을 쓰지 않음) */}
-      <img
-        src={`${base}-${fallbackWidth}.webp`}
-        srcSet={srcSet("webp")}
-        sizes={sizes}
-        alt={alt}
-        width={size.width}
-        height={size.height}
-        decoding="async"
-        {...loading}
-        style={{
-          backgroundImage: `url(${entry.blur})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-        className={cn(fillClass, className)}
-      />
-    </picture>
+    // eslint-disable-next-line @next/next/no-img-element -- 미리 만든 썸네일을 srcSet으로 직접 고른다 (next/image 변환을 쓰지 않음)
+    <img
+      src={`${base}-${fallbackWidth}.webp`}
+      srcSet={srcSet("webp")}
+      sizes={sizes}
+      alt={alt}
+      width={size.width}
+      height={size.height}
+      decoding="async"
+      {...loading}
+      style={{
+        backgroundImage: `url(${entry.blur})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+      className={cn(fillClass, className)}
+    />
   );
 }
