@@ -2,13 +2,16 @@ import productImages from "@/generated/product-images.json";
 import { cn } from "@/shared/lib/utils";
 
 /*
- * 상품 이미지 — 미리 만든 썸네일(scripts/images/build-product-thumbnails.mjs)을 크기별로 고르고,
- * 받는 동안 흐린 미리보기(16px)를 배경으로 깐다.
+ * 상품 이미지 — 미리 만든 WebP 썸네일(scripts/images/build-product-thumbnails.mjs)을 srcSet으로 고른다.
  * next/image의 요청 때 변환은 캐시가 없으면 장당 약 1.1초 걸려, 상품 이미지는 정적 썸네일로 CDN에서 바로 준다.
- * AVIF를 먼저 주고(<source>), 지원하지 않는 브라우저는 WebP를 받는다.
- * 썸네일이 없는 이미지(목록에 없는 경로)는 원본을 그대로 쓴다.
+ * <picture> 없이 <img>로 두어 priority 이미지는 React가 자동으로 preload한다.
+ *
+ * 흐린 미리보기(fill일 때): 원본을 3×3으로 줄인 색을 CSS 그라데이션 + blur로 이미지 뒤에 깐다.
+ * 작은 이미지(data URL)로 넣으면 Lighthouse가 요청으로 세어 LCP 계산이 늦어져(상품 목록 약 +0.2s) 이미지를 쓰지 않는다.
+ *
+ * 썸네일 목록에 없는 경로는 원본을 그대로 쓴다.
  */
-type Manifest = Record<string, { widths: number[]; blur: string }>;
+type Manifest = Record<string, { widths: number[]; colors: string[] }>;
 const MANIFEST = productImages as Manifest;
 
 type ProductImageProps = {
@@ -24,6 +27,17 @@ type ProductImageProps = {
   | { fill?: false; width: number; height: number; sizes?: string }
 );
 
+/** 3×3 색 → 세로 그라데이션 세 줄 (blur로 경계를 흐린다) */
+function blurBackground(colors: string[]): React.CSSProperties {
+  const column = (i: number) => `linear-gradient(${colors[i]}, ${colors[i + 3]}, ${colors[i + 6]})`;
+  return {
+    backgroundImage: [column(0), column(1), column(2)].join(", "),
+    backgroundSize: "33.4% 100%",
+    backgroundPosition: "0 0, 50% 0, 100% 0",
+    backgroundRepeat: "no-repeat",
+  };
+}
+
 export function ProductImage({
   src,
   alt,
@@ -34,44 +48,35 @@ export function ProductImage({
 }: ProductImageProps) {
   const entry = MANIFEST[src];
   const base = src.replace(/^\/images\/products\//, "/images/products/thumbs/").replace(/\.[a-z]+$/i, "");
-  const srcSet = (ext: string) => entry?.widths.map((w) => `${base}-${w}.${ext} ${w}w`).join(", ");
-  const sizes = size.sizes ?? `${size.width}px`;
-  const loading = {
+  const common = {
+    alt,
+    width: size.width,
+    height: size.height,
+    decoding: "async" as const,
     loading: priority ? ("eager" as const) : lazyOrEager,
     fetchPriority: priority ? ("high" as const) : undefined,
+    className: cn(size.fill && "absolute inset-0 size-full", className),
   };
-  const fillClass = size.fill ? "absolute inset-0 size-full" : undefined;
 
-  if (!entry) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element -- 썸네일 목록에 없는 경로는 원본을 그대로 쓴다
-      <img
-        src={src}
-        alt={alt}
-        width={size.width}
-        height={size.height}
-        decoding="async"
-        {...loading}
-        className={cn(fillClass, className)}
-      />
-    );
-  }
+  // eslint-disable-next-line @next/next/no-img-element -- 썸네일 목록에 없는 경로는 원본을 그대로 쓴다
+  if (!entry) return <img src={src} {...common} />;
 
   const fallbackWidth = entry.widths.find((w) => w >= 384) ?? entry.widths.at(-1);
-  // WebP만 쓴다: AVIF는 전송량이 약 30% 작지만 해독이 느려 LCP가 늘었다 (실험: 상품 상세 모바일 LCP 2.71 → 3.69–3.74s).
-  // <picture> 없이 <img>로 두면 priority 이미지는 React가 자동으로 preload한다
-  return (
+  const image = (
     // eslint-disable-next-line @next/next/no-img-element -- 미리 만든 썸네일을 srcSet으로 직접 고른다 (next/image 변환을 쓰지 않음)
     <img
       src={`${base}-${fallbackWidth}.webp`}
-      srcSet={srcSet("webp")}
-      sizes={sizes}
-      alt={alt}
-      width={size.width}
-      height={size.height}
-      decoding="async"
-      {...loading}
-      className={cn(fillClass, className)}
+      srcSet={entry.widths.map((w) => `${base}-${w}.webp ${w}w`).join(", ")}
+      sizes={size.sizes ?? `${size.width}px`}
+      {...common}
     />
+  );
+  if (!size.fill) return image;
+
+  return (
+    <>
+      <span aria-hidden className="absolute inset-0 scale-110 blur-xl" style={blurBackground(entry.colors)} />
+      {image}
+    </>
   );
 }
