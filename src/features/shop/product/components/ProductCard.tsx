@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Product } from "@/generated/prisma/client";
 import { formatPrice } from "@/shared/lib/format";
 
-/** Figma: ProductCard — 테두리 없이 정사각 사진 · 세리프 상품명 · 영문 부제 · 가격 */
+/** Figma: ProductCard — 테두리 없이 정사각 사진 · 상품명 · 영문 부제 · 가격 */
 type ProductCardProps = {
   product: Pick<Product, "slug" | "name" | "nameEn" | "price" | "imagePath">;
   /** 이미지 sizes 힌트 (기본: 모바일 2열 · 데스크톱 4열) */
