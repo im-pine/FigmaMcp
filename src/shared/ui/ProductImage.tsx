@@ -49,7 +49,6 @@ export function ProductImage({
   const entry = MANIFEST[src];
   const base = src.replace(/^\/images\/products\//, "/images/products/thumbs/").replace(/\.[a-z]+$/i, "");
   const common = {
-    alt,
     width: size.width,
     height: size.height,
     decoding: "async" as const,
@@ -59,7 +58,7 @@ export function ProductImage({
   };
 
   // eslint-disable-next-line @next/next/no-img-element -- 썸네일 목록에 없는 경로는 원본을 그대로 쓴다
-  if (!entry) return <img src={src} {...common} />;
+  if (!entry) return <img src={src} alt={alt} {...common} />;
 
   const fallbackWidth = entry.widths.find((w) => w >= 384) ?? entry.widths.at(-1);
   const image = (
@@ -68,6 +67,7 @@ export function ProductImage({
       src={`${base}-${fallbackWidth}.webp`}
       srcSet={entry.widths.map((w) => `${base}-${w}.webp ${w}w`).join(", ")}
       sizes={size.sizes ?? `${size.width}px`}
+      alt={alt}
       {...common}
     />
   );
