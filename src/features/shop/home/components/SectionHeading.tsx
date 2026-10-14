@@ -1,6 +1,6 @@
 import { cn } from "@/shared/lib/utils";
 
-/** 섹션 머리: 작은 영문 라벨 → 세리프 제목 (디자인 브리프의 반복 패턴) */
+/** 섹션 머리: 작은 영문 라벨 → 굵은 제목 (디자인 브리프의 반복 패턴) */
 export function SectionHeading({
   label,
   title,
