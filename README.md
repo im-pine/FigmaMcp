@@ -192,6 +192,7 @@ pnpm test:e2e                     # 프로덕션 빌드를 3800 포트에 띄워
 
 - 배포 주소: **https://bakery.im-pine.com/**
 - Hosting: Vercel (`main` 브랜치 기준 자동 배포)
+- 서버 함수 지역: 도쿄 `hnd1` (`vercel.json`) — DB와 같은 지역에 두어 조회마다 태평양을 건너지 않게 합니다. DB 지역을 바꾸면 이 값도 함께 바꿉니다.
 - 배포 환경의 DB 연결 정보는 Vercel 환경 변수 `DATABASE_URL`로, 관리자 비밀번호는 `ADMIN_PASSWORD`로 주입합니다.
 - 배포할 때마다 `vercel-build`(`prisma migrate deploy && next build`)가 DB 마이그레이션을 먼저 적용합니다.
 - 새 DB에는 최초 한 번 시드(상품 12개 · 데모 주문 10건)를 직접 넣습니다: `DATABASE_URL="<배포 DB>" pnpm db:seed` 후 Redeploy
