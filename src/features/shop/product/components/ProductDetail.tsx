@@ -7,6 +7,7 @@ import { categoryOf } from "../categories";
 import { ProductCard } from "./ProductCard";
 import { ProductGallery } from "./ProductGallery";
 import { PurchasePanel } from "./PurchasePanel";
+import { catalogHref } from "../catalog-href";
 
 /** 상품 상세 (Figma: Product Detail 8:390 / Mobile 11:1087) */
 export async function ProductDetail({ product }: { product: Product }) {
@@ -26,7 +27,7 @@ export async function ProductDetail({ product }: { product: Product }) {
             </li>
             <li aria-hidden>/</li>
             <li>
-              <Link href={`/products?category=${category.slug}`} className="hover:text-heading">
+              <Link href={catalogHref({ category: category.slug })} className="hover:text-heading">
                 {category.label}
               </Link>
             </li>

@@ -1,9 +1,10 @@
 import { CATEGORIES } from "@/shared/constants/catalog";
+import { catalogHref } from "@/features/shop/product/catalog-href";
 
 /** 헤더 · 푸터 · 버블 메뉴에서 쓰는 카테고리 링크 (All 포함) */
 export const CATEGORY_LINKS = [
   { label: "All", slug: "all", href: "/products" },
-  ...CATEGORIES.map((c) => ({ label: c.label, slug: c.slug, href: `/products?category=${c.slug}` })),
+  ...CATEGORIES.map((c) => ({ label: c.label, slug: c.slug, href: catalogHref({ category: c.slug }) })),
 ];
 
 export const SHOP_INFO = {

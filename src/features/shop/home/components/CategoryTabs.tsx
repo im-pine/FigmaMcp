@@ -9,6 +9,7 @@ import { CATEGORIES } from "@/shared/constants/catalog";
 import { cn } from "@/shared/lib/utils";
 import { ALL_CATEGORY_DISPLAY, CATEGORY_DISPLAY } from "@/features/shop/product/categories";
 import { ProductCard } from "@/features/shop/product/components/ProductCard";
+import { catalogHref } from "@/features/shop/product/catalog-href";
 
 /*
  * 모바일 카테고리 탭 (Figma: Category Tab) — 원형 아이콘 탭을 누르면 아래 2×2 상품 목록이 바뀐다.
@@ -75,7 +76,7 @@ export function CategoryTabs({ products }: { products: Product[] }) {
             <span className="type-body-sm text-caption">{matched.length}개</span>
           </p>
           <Link
-            href={tab.slug ? `/products?category=${tab.slug}` : "/products"}
+            href={catalogHref({ category: tab.slug })}
             className="flex items-center gap-1 type-body-sm text-link"
           >
             전체 보기 <ArrowRight className="size-4" aria-hidden />
