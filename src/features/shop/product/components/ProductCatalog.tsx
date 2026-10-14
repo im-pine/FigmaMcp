@@ -87,9 +87,10 @@ async function CatalogBody({ searchParams }: { searchParams: SearchParams }) {
 
       {products.length > 0 ? (
         <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-8 lg:mt-10 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
-          {products.map((p) => (
+          {/* 첫 줄(데스크톱 4장)은 바로 받고, 모바일 첫 줄 2장은 LCP 후보라 우선순위를 높인다 */}
+          {products.map((p, i) => (
             <li key={p.id}>
-              <ProductCard product={p} />
+              <ProductCard product={p} imagePriority={i < 2 ? "high" : i < 4 ? "eager" : undefined} />
             </li>
           ))}
         </ul>

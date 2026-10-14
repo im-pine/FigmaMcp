@@ -7,9 +7,11 @@ import { Button } from "@/shared/ui/button";
  * <picture> + <source media>로 화면 폭에 맞는 이미지 한 장만 내려받는다 (CSS로 숨기지 않음).
  */
 const DESKTOP_MEDIA = "(min-width: 1024px)";
+// LCP 이미지라 바로 · 높은 우선순위로 받는다. <picture>에서는 preload(<link>)가 두 이미지를 모두 받으므로 쓰지 않는다
+// (Next.js 16 Image 문서: 화면 폭별 이미지는 fetchPriority="high")
 
 export function HomeHero() {
-  const common = { alt: "아침 햇살 아래 갓 구운 빵이 놓인 베이커리 작업대", sizes: "100vw", priority: true };
+  const common = { alt: "아침 햇살 아래 갓 구운 빵이 놓인 베이커리 작업대", sizes: "100vw" };
   const {
     props: { srcSet: desktopSrcSet },
   } = getImageProps({ ...common, src: "/images/hero/hero-desktop.jpg", width: 1584, height: 672 });
@@ -25,6 +27,8 @@ export function HomeHero() {
           {...imgProps}
           alt={common.alt}
           srcSet={mobileSrcSet}
+          loading="eager"
+          fetchPriority="high"
           className="absolute inset-0 size-full object-cover"
         />
       </picture>
