@@ -1,5 +1,6 @@
 import { ArrowLeft, Check } from "lucide-react";
 import Image from "next/image";
+import { thumbnailOf } from "@/shared/lib/product-image";
 import Link from "next/link";
 import { Fragment } from "react";
 import type { OrderStatus } from "@/generated/prisma/enums";
@@ -232,7 +233,7 @@ function ItemsCard({
           <li key={item.id} className="flex items-center gap-4 border-b border-line py-3 first:pt-0">
             {item.product ? (
               <Image
-                src={item.product.imagePath}
+                src={thumbnailOf(item.product.imagePath)}
                 alt=""
                 width={52}
                 height={52}

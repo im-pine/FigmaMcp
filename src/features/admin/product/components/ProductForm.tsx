@@ -2,6 +2,7 @@
 
 import { Check, X } from "lucide-react";
 import Image from "next/image";
+import { thumbnailOf } from "@/shared/lib/product-image";
 import { useId, useState } from "react";
 import * as z from "zod";
 import type { Category, Product } from "@/generated/prisma/client";
@@ -231,7 +232,7 @@ function ProductFields({
                   selected && "ring-[3px] ring-action",
                 )}
               >
-                <Image src={src} alt="" fill sizes="86px" className="object-cover" />
+                <Image src={thumbnailOf(src)} alt="" fill sizes="86px" className="object-cover" />
                 {selected && (
                   <span
                     className={cn(

@@ -1,6 +1,7 @@
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { Button } from "@/shared/ui/button";
+import { catalogHref } from "@/features/shop/product/catalog-href";
 
 /*
  * 메인 배너 (Figma: Home Hero) — 데스크톱은 가로형 이미지에 왼쪽 글자, 모바일은 세로형 이미지에 왼쪽 위 글자.
@@ -57,7 +58,7 @@ export function HomeHero() {
             <Link href="/products">전체 상품 보기</Link>
           </Button>
           <Button asChild className="hidden lg:inline-flex">
-            <Link href="/products?category=bread">오늘의 빵 보기</Link>
+            <Link href={catalogHref({ category: "bread" })}>오늘의 빵 보기</Link>
           </Button>
           <Button asChild variant="inverse" className="hidden lg:inline-flex">
             <Link href="/products">전체 상품</Link>

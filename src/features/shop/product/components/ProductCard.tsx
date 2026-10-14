@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { thumbnailOf } from "@/shared/lib/product-image";
 import Link from "next/link";
 import type { Product } from "@/generated/prisma/client";
 import { formatPrice } from "@/shared/lib/format";
@@ -21,7 +22,7 @@ export function ProductCard({
     <Link href={`/products/${product.slug}`} className="group flex flex-col items-center text-center">
       <div className="relative aspect-square w-full overflow-hidden rounded-card bg-section">
         <Image
-          src={product.imagePath}
+          src={thumbnailOf(product.imagePath)}
           alt={product.name}
           fill
           sizes={sizes}

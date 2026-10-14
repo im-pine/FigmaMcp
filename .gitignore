@@ -40,3 +40,6 @@ yarn-error.log*
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# 성능 측정 결과 (pnpm perf:lighthouse)
+/perf-results
