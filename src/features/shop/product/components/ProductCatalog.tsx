@@ -87,9 +87,10 @@ async function CatalogBody({ searchParams }: { searchParams: SearchParams }) {
 
       {products.length > 0 ? (
         <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-8 lg:mt-10 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
-          {products.map((p) => (
+          {/* 첫 2장(모바일 첫 줄)은 LCP 후보라 먼저 받는다. 나머지는 lazy — 바로 받게 하면 React가 preload해 대역폭을 다툰다 */}
+          {products.map((p, i) => (
             <li key={p.id}>
-              <ProductCard product={p} />
+              <ProductCard product={p} highPriorityImage={i < 2} />
             </li>
           ))}
         </ul>

@@ -7,7 +7,7 @@ import { cn } from "@/shared/lib/utils";
 
 type CategoryItem = (typeof CATEGORIES)[number];
 
-/** Figma: Category Card (데스크톱) — 카테고리 색 배경 · 배경 없는 오브젝트 · 세리프 이름 · 한 줄 설명 + 화살표 */
+/** Figma: Category Card (데스크톱) — 카테고리 색 배경 · 배경 없는 오브젝트 · 굵은 이름 · 한 줄 설명 + 화살표 */
 export function CategoryCard({ category }: { category: CategoryItem }) {
   const display = CATEGORY_DISPLAY[category.value];
   return (

@@ -17,7 +17,10 @@ export function BrandLogo({ height, tone = "dark" }: { height: number; tone?: ke
       alt="Pine Bakery"
       width={Math.round(height * (logo.width / logo.height))}
       height={height}
-      priority={tone === "dark"}
+      // 헤더 로고는 첫 화면에 보이므로 바로 받되 낮은 우선순위로 — LCP 이미지와 대역폭을 다투지 않게.
+      // React 19는 lazy · fetchPriority="low"가 아닌 <img>를 자동으로 preload하므로 "low"가 필요하다
+      loading={tone === "dark" ? "eager" : undefined}
+      fetchPriority={tone === "dark" ? "low" : undefined}
     />
   );
 }

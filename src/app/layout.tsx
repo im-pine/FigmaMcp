@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import { QueryProvider } from "@/shared/providers/QueryProvider";
 import "./globals.css";
 
-// 제목: Noto Serif KR, 본문 · UI: Noto Sans KR (Figma 텍스트 스타일과 동일)
+// 제목 · 본문 · UI 모두 Noto Sans KR 하나 (Figma 텍스트 스타일과 동일).
+// 한글 세리프는 글자 조각이 커서 제목 몇 글자에 폰트 전송량의 65–75%를 차지해 뺐다.
+// weight를 지정하지 않으면 가변 폰트(굵기 축 하나)로 받는다 — Google이 굵기마다 같은 파일을 주므로 전송량은 같다
 const notoSans = Noto_Sans_KR({
   variable: "--font-noto-sans-kr",
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const notoSerif = Noto_Serif_KR({
-  variable: "--font-noto-serif-kr",
-  weight: ["400", "500"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -27,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={`${notoSans.variable} ${notoSerif.variable} h-full antialiased`}>
+    <html lang="ko" className={`${notoSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <QueryProvider>{children}</QueryProvider>
       </body>
