@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { thumbnailOf } from "@/shared/lib/product-image";
 import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 
@@ -43,7 +44,13 @@ export function ProductGallery({ src, alt }: { src: string; alt: string }) {
               i === active ? "border-action" : "border-transparent hover:border-line",
             )}
           >
-            <Image src={src} alt="" fill sizes="148px" className={cn("object-cover", v.className)} />
+            <Image
+              src={thumbnailOf(src)}
+              alt=""
+              fill
+              sizes="148px"
+              className={cn("object-cover", v.className)}
+            />
           </button>
         ))}
       </div>

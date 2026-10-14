@@ -23,7 +23,8 @@
     "perf:lighthouse": "node scripts/perf/lighthouse.mjs",
     "perf:summary": "node scripts/perf/summary.mjs",
     "perf:flow": "node scripts/perf/flow.mjs",
-    "perf:db": "node scripts/perf/db-probe.mjs"
+    "perf:db": "node scripts/perf/db-probe.mjs",
+    "images:thumbnails": "node scripts/images/make-thumbnails.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.0",
@@ -66,6 +67,7 @@
     "prisma": "7.10.0",
     "prisma-zod-generator": "3.3.1",
     "puppeteer-core": "24.43.1",
+    "sharp": "0.35.5",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5"
