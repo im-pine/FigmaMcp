@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { CATEGORIES } from "@/shared/constants/catalog";
 import { Chip } from "@/shared/ui/Chip";
+import { catalogHref } from "../catalog-href";
 
 /*
  * 상품 목록 필터 (Figma: Product List · Search Result)
- * - 카테고리 칩: ?category=bread … (All은 category 제거). 검색어는 유지한다
+ * - 카테고리 칩: /products/category/bread … (All은 /products). 검색어는 유지한다 (주소는 catalogHref)
  * - 검색어 칩: ✕를 누르면 q만 지우고 카테고리는 유지한다
  * - 정렬(sort)은 어느 쪽을 눌러도 유지한다. 기본(인기순)은 주소에 넣지 않으므로 "latest"일 때만 받는다
  */
@@ -16,15 +17,6 @@ const CHIPS = [
   { label: "All", slug: undefined },
   ...CATEGORIES.map((c) => ({ label: c.label, slug: c.slug })),
 ];
-
-function catalogHref(category?: string, q?: string, sort?: string) {
-  const params = new URLSearchParams();
-  if (q) params.set("q", q);
-  if (category) params.set("category", category);
-  if (sort) params.set("sort", sort);
-  const query = params.toString();
-  return query ? `/products?${query}` : "/products";
-}
 
 export function CatalogFilterBar({ category, q, sort }: { category?: string; q?: string; sort?: string }) {
   const router = useRouter();
@@ -40,7 +32,7 @@ export function CatalogFilterBar({ category, q, sort }: { category?: string; q?:
             <button
               type="button"
               aria-label={`검색어 '${q}' 지우기`}
-              onClick={() => go(catalogHref(category, undefined, sort))}
+              onClick={() => go(catalogHref({ category, sort }))}
               className="relative rounded-full p-0.5 before:absolute before:top-1/2 before:left-1/2 before:size-11 before:-translate-1/2 before:content-[''] hover:bg-primary-300"
             >
               <X className="size-4" />
@@ -53,7 +45,7 @@ export function CatalogFilterBar({ category, q, sort }: { category?: string; q?:
         <Chip
           key={c.label}
           selected={c.slug === category}
-          onClick={() => go(catalogHref(c.slug, q, sort))}
+          onClick={() => go(catalogHref({ category: c.slug, q, sort }))}
           className="shrink-0"
         >
           {c.label}
