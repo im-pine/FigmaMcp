@@ -184,6 +184,19 @@ pnpm test:e2e                     # 프로덕션 빌드를 3800 포트에 띄워
 - 비동기 Server Component는 Jest가 지원하지 않아(Next.js 문서) 화면 흐름은 E2E로 확인합니다.
 - 테스트 항목 선정 기준과 구성은 [Wiki — Testing](https://github.com/im-pine/FigmaMcp/wiki/Project%E2%80%90Testing)에 정리했습니다. PR마다 GitHub Actions에서 자동으로 실행됩니다.
 
+### Performance
+
+```bash
+pnpm perf:lighthouse --base https://bakery.im-pine.com   # 8개 화면 × 모바일 · 데스크톱 × 5회, 결과 JSON은 perf-results/
+pnpm perf:summary --dir perf-results/<폴더>               # 화면 · 기기별 중앙값 · 범위 표
+pnpm perf:flow --base https://bakery.im-pine.com         # 클릭 흐름 시간 (주문 '상세 보기' 등)
+pnpm perf:db --base https://bakery.im-pine.com           # DB 조회 1건 비용 (서버 · DB 지역 확인)
+```
+
+- Lighthouse CLI 13.4.1 · 5회 중앙값으로 측정 방식을 고정합니다. Chrome 경로는 `CHROME_PATH`로 바꿀 수 있습니다.
+- Vercel 미리보기 · dev 배포는 배포 보호가 있어 `.env`의 `VERCEL_AUTOMATION_BYPASS_SECRET`(Protection Bypass for Automation)이 필요합니다.
+- 측정 결과와 개선 과정은 [Wiki — Performance](https://github.com/im-pine/FigmaMcp/wiki/Project%E2%80%90Performance)에 정리했습니다.
+
 폴더 구조와 개발 규칙은 [`CLAUDE.md`](./CLAUDE.md)를 참고하세요.
 
 ---
