@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { CATEGORY_LINKS } from "./nav";
 
 /** 데스크톱 헤더 카테고리 메뉴 — 지금 보고 있는 카테고리에 aria-current를 단다 */
 export function HeaderNav() {
   const pathname = usePathname();
-  const category = useSearchParams().get("category") ?? "all";
-  return <HeaderNavLinks current={pathname === "/products" ? category : undefined} />;
+  const current = pathname === "/products" ? "all" : pathname.match(/^\/products\/category\/([^/]+)$/)?.[1];
+  return <HeaderNavLinks current={current} />;
 }
 
 /** Suspense fallback — 현재 위치 없이 같은 메뉴 */

@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Chip } from "@/shared/ui/Chip";
 import { SearchBar } from "@/shared/ui/SearchBar";
+import { catalogHref } from "@/features/shop/product/catalog-href";
 
 /*
  * 검색 입력 + 추천 검색어 (Figma: Search Modal 7:314 · Mobile Search 17:1758)
- * 검색하면 상품 목록(/products?q=…)으로 이동해 결과를 필터링한다.
+ * 검색하면 검색 결과(/products/search?q=…)로 이동해 결과를 필터링한다.
  */
 const SUGGESTED_KEYWORDS = ["크루아상", "소금빵", "케이크", "쿠키", "밀크티"];
 
@@ -25,7 +26,7 @@ export function SearchPanel({ onNavigate, hint, autoFocus }: SearchPanelProps) {
   const search = (keyword: string) => {
     const q = keyword.trim();
     if (!q) return;
-    router.push(`/products?q=${encodeURIComponent(q)}`);
+    router.push(catalogHref({ q }));
     onNavigate?.();
   };
 

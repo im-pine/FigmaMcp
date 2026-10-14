@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { CATEGORIES } from "@/shared/constants/catalog";
 import { CATEGORY_DISPLAY } from "@/features/shop/product/categories";
 import { cn } from "@/shared/lib/utils";
+import { catalogHref } from "@/features/shop/product/catalog-href";
 
 type CategoryItem = (typeof CATEGORIES)[number];
 
@@ -12,7 +13,7 @@ export function CategoryCard({ category }: { category: CategoryItem }) {
   const display = CATEGORY_DISPLAY[category.value];
   return (
     <Link
-      href={`/products?category=${category.slug}`}
+      href={catalogHref({ category: category.slug })}
       className={cn(
         "group flex h-[436px] flex-col items-center rounded-card px-5 pt-8 pb-6 shadow-card transition-transform duration-200 hover:-translate-y-1",
         display.bg,
