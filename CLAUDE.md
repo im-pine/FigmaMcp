@@ -55,8 +55,10 @@ prisma/                 schema.prisma · migrations · seed.ts
 ## Git · PR
 - 브랜치: `main` ← `dev` ← `<feat|fix|docs>/<shop|admin|common>-<기능>` (영문 소문자 · 하이픈). `main` · `dev`에 직접 커밋 금지
 - 커밋: `<gitmoji> <type>(<scope>): <요약>` (✨ feat · 🐛 fix · 💄 style · ♻️ refactor · 📝 docs · ✅ test · 🔧 chore · 🍱 assets · 🔥 remove)
-- PR: base `dev`, 제목 = 커밋 메시지 형식(squash 시 그대로 커밋됨), 본문은 `.github/pull_request_template.md`(What · Review 최대 3개 · How to test, 짧은 불릿). **제목 칸만 영문, 내용은 한글로 쓴다**. 머지는 사용자가 승인 후 squash
-- **PR을 올리기 전에 Review 항목을 직접 검증한다.** 화면은 실제 브라우저로 확인한다(헤드리스 Chrome + DevTools 프로토콜로 스크린샷 · 탭 · 애니메이션 프레임, 모바일은 390px 에뮬레이션). 보고할 때 항목별로 "확인함 / 판단 필요"를 구분하고, 사람의 판단이 필요한 것만 묻는다
+- PR: base `dev`, 제목 = 커밋 메시지 형식(squash 시 그대로 커밋됨), 본문은 `.github/pull_request_template.md`(What · Scope · Review · Test · How to test, 짧은 불릿). **제목 칸만 영문, 내용은 한글로 쓴다**. 머지는 사용자가 승인 후 squash
+- PR 작성법은 리뷰봇 지침(BoP 50.1.2 PR 작성 지침)을 따른다: Review는 `- [x] [종류] 주장 — 확인: 방법 → 결과`, 개수 제한 없이 누락 · 중복 없이. **판단이 필요한 것은 작업 중에 사용자에게 묻고 결과만 PR에 적는다** — `[ ]`가 남은 PR은 올리지 않는다
+- **리뷰봇:** 초안이 아닌 PR을 열거나 커밋을 올리면 리뷰봇 v2(GitHub App `im-pine-review-bot`, 본체 `im-pine/review-bot`)가 CI 완료 후 자동으로 리뷰해 판정 코멘트와 `review-bot` 커밋 상태를 남긴다 (저장소에 워크플로 · 시크릿 없음, 코멘트 전용). 수정 요청이면 고친 뒤 다시 푸시한다. 오탐 · 놓침은 `/review-feedback <번호> 오탐|맞음 [이유]` · `/review-feedback 놓침 <내용>`(im-pine만)
+- **PR을 올리기 전에 Review 항목을 직접 검증한다.** 화면은 실제 브라우저로 확인한다(헤드리스 Chrome + DevTools 프로토콜로 스크린샷 · 탭 · 애니메이션 프레임, 모바일은 390px 에뮬레이션)
 - PR 없이 하는 작업(문서 등)은 사용자가 요청할 때만 커밋 · 푸시
 - 병렬 작업은 worktree로: `git worktree add ../FigmaMcp-<영역>-<기능> -b feat/<영역>-<기능> dev` → `.env` 복사 → `pnpm install`
 - `gh`는 `~/.local/bin/gh`에 있다 (PATH에 없음)
